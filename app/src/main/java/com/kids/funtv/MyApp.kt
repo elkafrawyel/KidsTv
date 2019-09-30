@@ -17,7 +17,7 @@ class MyApp: Application() {
         instance = this
         Utils.init(this)
 
-        MobileAds.initialize(this,"ca-app-pub-5669751081498672~1629715633")
+        MobileAds.initialize(this,getString(R.string.appId))
 
     }
 
