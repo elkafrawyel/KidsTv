@@ -3,6 +3,8 @@ package com.kids.funtv
 import android.app.Application
 import com.blankj.utilcode.util.Utils
 import com.google.android.gms.ads.MobileAds
+import com.kids.funtv.common.changeLanguage
+import com.kids.funtv.data.storage.PreferencesHelper
 import com.kids.funtv.service.remote.YoutubeAPI
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -15,6 +17,7 @@ class MyApp: Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        changeLanguage()
         Utils.init(this)
 
         MobileAds.initialize(this,getString(R.string.appId))
@@ -50,5 +53,7 @@ class MyApp: Application() {
             return retrofit.create(YoutubeAPI::class.java)
         }
 
+
+        fun getPreferenceHelper() = PreferencesHelper(instance)
     }
 }

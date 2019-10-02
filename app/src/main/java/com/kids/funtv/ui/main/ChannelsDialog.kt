@@ -10,11 +10,11 @@ import android.view.Window
 import android.view.WindowManager
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.kids.funtv.R
-import com.kids.funtv.model.ChannelModel
+import com.kids.funtv.data.model.ChannelModel
 import kotlinx.android.synthetic.main.channels_dialog.*
 
 class CartoonsDialog(context: Context, private val iCartoonCallback: ICartoonCallback) :
-    Dialog(context),
+    Dialog(context,R.style.CustomDialog),
     BaseQuickAdapter.OnItemChildClickListener {
 
 
@@ -35,8 +35,61 @@ class CartoonsDialog(context: Context, private val iCartoonCallback: ICartoonCal
         )
 
         val cartoonList = ArrayList<ChannelModel>()
-        cartoonList.add(ChannelModel("Spacetoon", R.drawable.spacetoon_logo))
-        cartoonList.add(ChannelModel("Cartoon Network", R.drawable.cartoon_network_logo))
+        cartoonList.add(
+            ChannelModel(
+                "سبيستون",
+                R.drawable.spacetoon_logo
+            )
+        )
+
+        cartoonList.add(
+            ChannelModel(
+                "كارتون نت وورك بالعربية",
+                R.drawable.cartoon_network_logo
+            )
+        )
+
+        cartoonList.add(
+            ChannelModel(
+                "توم وجيري كامل اطفال",
+                R.drawable.tom_jerry_logo
+            )
+        )
+
+        cartoonList.add(
+            ChannelModel(
+                "قناة كوكي كيدز للاطفال",
+                R.drawable.koky_logo
+            )
+        )
+
+        cartoonList.add(
+            ChannelModel(
+                "قناة توتة و حدوتة للاطفال",
+                R.drawable.tota_logo
+            )
+        )
+
+        cartoonList.add(
+            ChannelModel(
+                " قناة ميكي ماوس للاطفال",
+                R.drawable.miky_logo
+            )
+        )
+
+        cartoonList.add(
+            ChannelModel(
+                "قناة براعم للاطفال",
+                R.drawable.baraem_logo
+            )
+        )
+
+        cartoonList.add(
+            ChannelModel(
+                "قناة كراميش  للاطفال",
+                R.drawable.caramish_logo
+            )
+        )
 
         adapter.replaceData(cartoonList)
         cartoonsRv.adapter = adapter
@@ -45,19 +98,23 @@ class CartoonsDialog(context: Context, private val iCartoonCallback: ICartoonCal
         close.setOnClickListener {
             this.dismiss()
         }
+
+        this.setOnDismissListener {
+            iCartoonCallback.selectedCartoon(null,this)
+        }
+
     }
 
     override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
         when (view?.id) {
             R.id.cartoonItem -> {
                 val item = (adapter?.data as List<ChannelModel>)[position]
-                iCartoonCallback.selectedCartoon(item)
-                this.dismiss()
+                iCartoonCallback.selectedCartoon(item,this)
             }
         }
     }
 }
 
 interface ICartoonCallback {
-    fun selectedCartoon(channelModel: ChannelModel)
+    fun selectedCartoon(channelModel: ChannelModel?, channelsDialog: CartoonsDialog)
 }

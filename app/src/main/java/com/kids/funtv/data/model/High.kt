@@ -1,8 +1,8 @@
-package com.kids.funtv.model
+package com.kids.funtv.data.model
 
 import com.squareup.moshi.Json
 
-data class Medium(
+data class High(
     @field:Json(name = "url")
     val url: String,
     @field:Json(name = "width")

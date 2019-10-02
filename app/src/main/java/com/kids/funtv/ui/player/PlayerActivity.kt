@@ -12,9 +12,10 @@ import com.google.android.gms.ads.AdRequest
 import com.kids.funtv.MyApp
 import com.kids.funtv.R
 import com.kids.funtv.common.CustomLoadMoreView
-import com.kids.funtv.model.SearchItem
-import com.kids.funtv.model.SearchResponse
-import com.kids.funtv.model.VideoModel
+import com.kids.funtv.common.changeLanguage
+import com.kids.funtv.data.model.SearchItem
+import com.kids.funtv.data.model.SearchResponse
+import com.kids.funtv.data.model.VideoModel
 import com.kids.funtv.ui.main.AdapterSearch
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
@@ -58,7 +59,9 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        changeLanguage()
         setContentView(R.layout.activity_player)
+
 
         videoId = intent.getStringExtra(ID)
         videoTitle = intent.getStringExtra(TITLE)

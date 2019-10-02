@@ -15,11 +15,13 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.kids.funtv.MyApp
 import com.kids.funtv.R
+import com.kids.funtv.common.Constants
 import com.kids.funtv.common.CustomLoadMoreView
-import com.kids.funtv.model.ChannelModel
-import com.kids.funtv.model.SearchItem
-import com.kids.funtv.model.SearchResponse
-import com.kids.funtv.model.VideoModel
+import com.kids.funtv.common.changeLanguage
+import com.kids.funtv.data.model.ChannelModel
+import com.kids.funtv.data.model.SearchItem
+import com.kids.funtv.data.model.SearchResponse
+import com.kids.funtv.data.model.VideoModel
 import com.kids.funtv.ui.player.PlayerActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.toast
@@ -43,10 +45,10 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        changeLanguage()
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        toolbar.title = getString(R.string.app_name)
-
+        supportActionBar!!.title = getString(R.string.app_name)
         videosRv.setHasFixedSize(true)
         videosRv.adapter = adapterSearch
 
@@ -76,28 +78,27 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
 
     private fun openCartoonDialog() {
         val cartoonsDialog = CartoonsDialog(this, object : ICartoonCallback {
-            override fun selectedCartoon(channelModel: ChannelModel) {
-                searchQuery = channelModel.name
-                pageToken = null
-                adapterSearch.data.clear()
-                adapterSearch.notifyDataSetChanged()
-                searchYoutube()
+            override fun selectedCartoon(
+                channelModel: ChannelModel?,
+                channelsDialog: CartoonsDialog
+            ) {
+                if (channelModel != null) {
+                    channelModel.name
+                    pageToken = null
+                    adapterSearch.data.clear()
+                    adapterSearch.notifyDataSetChanged()
+                    searchYoutube()
+                } else {
+                    if (pageToken == null) {
+                        searchQuery = "اطفال كرتون"
+                        adapterSearch.data.clear()
+                        adapterSearch.notifyDataSetChanged()
+                        searchYoutube()
+                    }
+                }
+                channelsDialog.dismiss()
             }
         })
-
-        cartoonsDialog.setOnDismissListener {
-            if (pageToken == null) {
-                val lang = Locale.getDefault().displayLanguage
-                searchQuery = if (lang == AR) {
-                    "كارتون اطفال"
-                } else {
-                    "kids cartoon"
-                }
-                adapterSearch.data.clear()
-                adapterSearch.notifyDataSetChanged()
-                searchYoutube()
-            }
-        }
 
         cartoonsDialog.show()
     }
@@ -199,7 +200,8 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
                 search = searchQuery,
                 type = "video",
                 pageToken = pageToken,
-                maxResult = 20
+                maxResult = 20,
+                regionCode = getString(R.string.regionCode)
             )
 
         call.enqueue(object : Callback<SearchResponse> {

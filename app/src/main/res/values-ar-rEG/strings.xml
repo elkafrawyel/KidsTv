@@ -10,6 +10,8 @@
     <string name="player_error">خطأ في تشغيل الفيديو : %s</string>
     <string name="error_message">خطأ في الانترنت.لا يمكن تحميل الفيديوهات</string>
     <string name="refresh">اضغط هنا للنحديث</string>
-    <string name="dialogTitle">اخنر لتبدأ المشاهدة</string>
+    <string name="dialogTitle">اختر لتبدأ المشاهدة</string>
+    <string name="regionCode">EG</string>
+    <string name="dialog_title">قائمة الكارتون</string>
 
 </resources>

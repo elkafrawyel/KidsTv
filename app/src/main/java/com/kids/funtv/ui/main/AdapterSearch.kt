@@ -8,7 +8,7 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.kids.funtv.R
-import com.kids.funtv.model.VideoModel
+import com.kids.funtv.data.model.VideoModel
 
 class AdapterSearch(data: MutableList<VideoModel>?) :
     BaseMultiItemQuickAdapter<VideoModel, BaseViewHolder>(data) {

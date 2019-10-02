@@ -12,7 +12,7 @@
 
     <item
         android:id="@+id/menu_dialog"
-        android:icon="@drawable/spacetoon_logo"
-        android:title="@string/search_title"
+        android:icon="@drawable/jerry"
+        android:title="@string/dialog_title"
         app:showAsAction="ifRoom" />
 </menu>

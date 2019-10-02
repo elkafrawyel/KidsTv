@@ -1,4 +1,4 @@
-package com.kids.funtv.model
+package com.kids.funtv.data.model
 
 import com.squareup.moshi.Json
 

@@ -1,4 +1,4 @@
-package com.kids.funtv.model
+package com.kids.funtv.data.model
 
 data class ChannelModel(
     val name: String,

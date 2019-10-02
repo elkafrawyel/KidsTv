@@ -1,6 +1,8 @@
 <resources>
-    <string name="key" translatable="false">AIzaSyCn4dNHKz14IFHkzyRD2MQvwCryRME5JgY</string>
-<!--    <string name="key" translatable="false">AIzaSyAyenwesv4XwxVReOsL6rUxsEiiGTw7vk4</string>-->
+<!--    My Key-->
+<!--    <string name="key" translatable="false">AIzaSyCn4dNHKz14IFHkzyRD2MQvwCryRME5JgY</string>-->
+<!--    Test Key-->
+    <string name="key" translatable="false">AIzaSyAyenwesv4XwxVReOsL6rUxsEiiGTw7vk4</string>
     <string name="appId" translatable="false">ca-app-pub-5669751081498672~1629715633</string>
     <string name="interstitialAd" translatable="false">ca-app-pub-5669751081498672/4802194956</string>
     <string name="bannerAd" translatable="false">ca-app-pub-5669751081498672/5791294258</string>
@@ -17,5 +19,7 @@
     <string name="error_message">Network error: failed to load the videos.</string>
     <string name="refresh">Please click here to refresh</string>
     <string name="dialogTitle">Choose to watch</string>
+    <string name="regionCode">US</string>
+    <string name="dialog_title">Cartoon List</string>
 
 </resources>
