@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.player.PlayerActivity"
-    android:id="@+id/playerRootView"
-    >
+    android:id="@+id/playerRootView">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -69,9 +68,8 @@
         android:id="@+id/videosRv"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="4dp"
         android:clipToPadding="false"
-        android:paddingBottom="60dp"
+        android:paddingBottom="90dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -104,8 +102,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-5669751081498672/5791294258"
+        ads:adSize="LARGE_BANNER"
+        ads:adUnitId="@string/bannerAd"
         ads:layout_constraintBottom_toBottomOf="parent"
         ads:layout_constraintEnd_toEndOf="parent"
         ads:layout_constraintStart_toStartOf="parent" />

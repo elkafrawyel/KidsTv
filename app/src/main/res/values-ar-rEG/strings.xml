@@ -3,11 +3,13 @@
     <string name="app_name">كيدز تي في</string>
     <string name="action_settings">الاعدادات</string>
     <string name="search_title">البحث</string>
-    <string name="search">اكتب كلمات البحث...</string>
-    <string name="loading">تحميل المزيد من الفيديوهات...</string>
+    <string name="search">اكتب كلمات البحث…</string>
+    <string name="loading">تحميل المزيد من الفيديوهات…</string>
     <string name="load_failed">فشل في التحميل</string>
     <string name="load_end">لا يوجد المزيد من الفيديوهات</string>
     <string name="player_error">خطأ في تشغيل الفيديو : %s</string>
     <string name="error_message">خطأ في الانترنت.لا يمكن تحميل الفيديوهات</string>
+    <string name="refresh">اضغط هنا للنحديث</string>
+    <string name="dialogTitle">اخنر لتبدأ المشاهدة</string>
 
 </resources>

@@ -4,13 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    app:cardCornerRadius="10dp"
-    android:id="@+id/videoItem">
+    android:layout_margin="8dp"
+    app:cardCornerRadius="15dp"
+    android:id="@+id/videoItem"
+    app:cardElevation="@dimen/dp_4"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/colorSearchCard">
 
         <ImageView
             android:id="@+id/videoImage"
@@ -30,6 +33,7 @@
             android:drawableStart="@drawable/play"
             android:gravity="start"
             android:drawablePadding="8dp"
+            android:background="@android:color/transparent"
             android:textAppearance="?attr/textAppearanceBody1"
             app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toEndOf="parent"

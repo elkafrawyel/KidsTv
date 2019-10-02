@@ -16,6 +16,7 @@ import com.google.android.gms.ads.InterstitialAd
 import com.kids.funtv.MyApp
 import com.kids.funtv.R
 import com.kids.funtv.common.CustomLoadMoreView
+import com.kids.funtv.model.ChannelModel
 import com.kids.funtv.model.SearchItem
 import com.kids.funtv.model.SearchResponse
 import com.kids.funtv.model.VideoModel
@@ -25,13 +26,14 @@ import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.ArrayList
+import java.util.*
 
 class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListener {
 
     private val part = "snippet"
     private var pageToken: String? = null
-    private var searchQuery: String = "Cartoon Network"
+    private var searchQuery: String = ""
+    private val AR = "العربية"
 
     lateinit var interstitialAd: InterstitialAd
 
@@ -52,10 +54,11 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
         adapterSearch.setOnLoadMoreListener({ searchYoutube(true) }, videosRv)
         adapterSearch.setLoadMoreView(CustomLoadMoreView())
 
-        searchYoutube()
+        openCartoonDialog()
 
         refresh.setOnClickListener {
             refresh.visibility = View.GONE
+            refreshMessage.visibility = View.GONE
             searchYoutube()
         }
 
@@ -66,10 +69,37 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
         )
 
         interstitialAd = InterstitialAd(this)
-        interstitialAd.adUnitId = "ca-app-pub-5669751081498672/4802194956"
-//        interstitialAd.loadAd(AdRequest.Builder().build())
+        interstitialAd.adUnitId = getString(R.string.interstitialAd)
         interstitialAd.loadAd(AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build())
 
+    }
+
+    private fun openCartoonDialog() {
+        val cartoonsDialog = CartoonsDialog(this, object : ICartoonCallback {
+            override fun selectedCartoon(channelModel: ChannelModel) {
+                searchQuery = channelModel.name
+                pageToken = null
+                adapterSearch.data.clear()
+                adapterSearch.notifyDataSetChanged()
+                searchYoutube()
+            }
+        })
+
+        cartoonsDialog.setOnDismissListener {
+            if (pageToken == null) {
+                val lang = Locale.getDefault().displayLanguage
+                searchQuery = if (lang == AR) {
+                    "كارتون اطفال"
+                } else {
+                    "kids cartoon"
+                }
+                adapterSearch.data.clear()
+                adapterSearch.notifyDataSetChanged()
+                searchYoutube()
+            }
+        }
+
+        cartoonsDialog.show()
     }
 
     override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
@@ -92,12 +122,10 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
                             (adapter?.data as List<VideoModel>)[position]
                         )
 
-//                        interstitialAd.loadAd(AdRequest.Builder().build())
                         interstitialAd.loadAd(AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build())
                     }
 
                     override fun onAdClicked() {
-//                        interstitialAd.loadAd(AdRequest.Builder().build())
                         interstitialAd.loadAd(AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build())
                     }
                 }
@@ -127,7 +155,6 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
                 }
             })
 
-
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     if (query != null && query.isNotBlank()) {
@@ -149,8 +176,18 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
 
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_dialog -> {
+                openCartoonDialog()
+            }
+        }
+        return true
+    }
+
     private fun searchYoutube(loadMore: Boolean = false) {
 
+        refreshMessage.visibility = View.GONE
         refresh.visibility = View.GONE
         if (!loadMore)
             loading.visibility = View.VISIBLE
@@ -172,12 +209,14 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
             ) {
                 loading.visibility = View.GONE
                 refresh.visibility = View.GONE
+                refreshMessage.visibility = View.GONE
                 if (response.isSuccessful && response.code() == 200) {
                     val videos = response.body()!!.items
                     pageToken = response.body()!!.nextPageToken
                     setVideos(videos)
                 } else {
                     refresh.visibility = View.VISIBLE
+                    refreshMessage.visibility = View.VISIBLE
                     adapterSearch.loadMoreFail()
                     toast(getString(R.string.error_message))
                 }
@@ -186,6 +225,7 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
             override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
                 loading.visibility = View.GONE
                 refresh.visibility = View.VISIBLE
+                refreshMessage.visibility = View.VISIBLE
                 toast(getString(R.string.error_message))
             }
         })
