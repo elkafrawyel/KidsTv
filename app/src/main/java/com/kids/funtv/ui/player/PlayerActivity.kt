@@ -59,7 +59,7 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        changeLanguage()
+//        changeLanguage()
         setContentView(R.layout.activity_player)
 
 
@@ -134,6 +134,7 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
         } else {
             lifecycle.addObserver(youtubeView)
 
+
             youtubeView.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
                 override fun onReady(youTubePlayer: YouTubePlayer) {
                     mYouTubePlayer = youTubePlayer
@@ -155,7 +156,14 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
 
                         }
                         PlayerConstants.PlayerState.ENDED -> {
-
+                            if (adapterSearch.data.isNotEmpty()){
+                                val video = adapterSearch.data[0]
+                                videoId = video.searchItem!!.id.videoId
+                                videoTitle = video.searchItem!!.snippet.title
+                                adapterSearch.data.clear()
+                                adapterSearch.notifyDataSetChanged()
+                                playVideo()
+                            }
                         }
                         PlayerConstants.PlayerState.PLAYING -> {
 
@@ -210,7 +218,7 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
                 part = part,
                 type = "video",
                 pageToken = pageToken,
-                maxResult = 10,
+                maxResult = 50,
                 relatedToVideoId = videoId!!
             )
 

@@ -17,7 +17,7 @@ class MyApp: Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        changeLanguage()
+//        changeLanguage()
         Utils.init(this)
 
         MobileAds.initialize(this,getString(R.string.appId))

@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        changeLanguage()
+//        changeLanguage()
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         supportActionBar!!.title = getString(R.string.app_name)
@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
                 channelsDialog: CartoonsDialog
             ) {
                 if (channelModel != null) {
-                    channelModel.name
+                    searchQuery = channelModel.name
                     pageToken = null
                     adapterSearch.data.clear()
                     adapterSearch.notifyDataSetChanged()
@@ -200,8 +200,8 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
                 search = searchQuery,
                 type = "video",
                 pageToken = pageToken,
-                maxResult = 20,
-                regionCode = getString(R.string.regionCode)
+                maxResult = 50
+//                regionCode = getString(R.string.regionCode)
             )
 
         call.enqueue(object : Callback<SearchResponse> {

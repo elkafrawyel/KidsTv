@@ -13,8 +13,8 @@ interface YoutubeAPI {
         @Query("q") search: String?,
         @Query("type") type: String,
         @Query("pageToken") pageToken: String?,
-        @Query("maxResults") maxResult: Int,
-        @Query("regionCode") regionCode: String
+        @Query("maxResults") maxResult: Int
+//        @Query("regionCode") regionCode: String
     ): Call<SearchResponse>
 
     @GET("search/")
