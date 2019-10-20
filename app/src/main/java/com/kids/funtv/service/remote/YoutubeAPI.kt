@@ -6,6 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface YoutubeAPI {
+
     @GET("search/")
     fun search(
         @Query("key") key: String,
@@ -14,7 +15,6 @@ interface YoutubeAPI {
         @Query("type") type: String,
         @Query("pageToken") pageToken: String?,
         @Query("maxResults") maxResult: Int
-//        @Query("regionCode") regionCode: String
     ): Call<SearchResponse>
 
     @GET("search/")
@@ -26,4 +26,5 @@ interface YoutubeAPI {
         @Query("pageToken") pageToken: String?,
         @Query("maxResults") maxResult: Int
     ): Call<SearchResponse>
+
 }

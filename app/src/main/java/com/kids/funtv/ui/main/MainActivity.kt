@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
                     searchYoutube()
                 } else {
                     if (pageToken == null) {
-                        searchQuery = "اطفال كرتون"
+                        searchQuery = "كارتون للاطفال + برامج اطفال"
                         adapterSearch.data.clear()
                         adapterSearch.notifyDataSetChanged()
                         searchYoutube()

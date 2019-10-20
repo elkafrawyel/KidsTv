@@ -6,6 +6,7 @@ import com.google.android.gms.ads.MobileAds
 import com.kids.funtv.common.changeLanguage
 import com.kids.funtv.data.storage.PreferencesHelper
 import com.kids.funtv.service.remote.YoutubeAPI
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -36,6 +37,7 @@ class MyApp: Application() {
 
         private fun getOkHttpClient(): OkHttpClient {
             return OkHttpClient.Builder()
+                .cache(Cache(MyApp.instance.cacheDir, 10 * 1024 * 1024))
                 .addInterceptor(getLoggingInterceptor())
                 .readTimeout(60, TimeUnit.SECONDS)
                 .connectTimeout(60,TimeUnit.SECONDS)
