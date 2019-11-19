@@ -13,7 +13,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
-val CHANNEL_ID= "com.kids.funtv"
+const val CHANNEL_ID= "com.kids.funtv"
 
 class MyApp: Application() {
 
@@ -39,7 +39,7 @@ class MyApp: Application() {
 
         private fun getOkHttpClient(): OkHttpClient {
             return OkHttpClient.Builder()
-                .cache(Cache(MyApp.instance.cacheDir, 10 * 1024 * 1024))
+                .cache(Cache(MyApp.instance.cacheDir, 15 * 1024 * 1024))
                 .addInterceptor(getLoggingInterceptor())
                 .readTimeout(60, TimeUnit.SECONDS)
                 .connectTimeout(60,TimeUnit.SECONDS)

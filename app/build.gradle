@@ -15,8 +15,8 @@ android {
         applicationId "com.kids.funtv"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 5
-        versionName "0.5"
+        versionCode 6
+        versionName "0.6"
         testInstrumentationRunner "androidx.jumping_girl.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -31,6 +31,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     signingConfigs {
         release {
             storeFile file("kidsTv.jks")
@@ -82,6 +83,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-crash:16.2.1'
     implementation 'com.google.firebase:firebase-core:17.2.1'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+    implementation 'com.github.elkafrawyel:FrameView-Android:0.0.7'
 
 }
 apply plugin: 'com.google.gms.google-services'
