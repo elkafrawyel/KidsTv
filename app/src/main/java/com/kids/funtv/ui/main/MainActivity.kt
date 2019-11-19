@@ -1,7 +1,9 @@
 package com.kids.funtv.ui.main
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -10,14 +12,13 @@ import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import com.blankj.utilcode.util.KeyboardUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
+import com.elkafrawyel.CustomViews
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.kids.funtv.MyApp
 import com.kids.funtv.R
-import com.kids.funtv.common.Constants
 import com.kids.funtv.common.CustomLoadMoreView
-import com.kids.funtv.common.changeLanguage
 import com.kids.funtv.data.model.ChannelModel
 import com.kids.funtv.data.model.SearchItem
 import com.kids.funtv.data.model.SearchResponse
@@ -47,6 +48,10 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
         super.onCreate(savedInstanceState)
 //        changeLanguage()
         setContentView(R.layout.activity_main)
+
+        rootView.setLayout(videosRv)
+        rootView.setVisible(CustomViews.LAYOUT)
+
         setSupportActionBar(toolbar)
         supportActionBar!!.title = getString(R.string.app_name)
         videosRv.setHasFixedSize(true)
@@ -57,12 +62,6 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
         adapterSearch.setLoadMoreView(CustomLoadMoreView())
 
         openCartoonDialog()
-
-        refresh.setOnClickListener {
-            refresh.visibility = View.GONE
-            refreshMessage.visibility = View.GONE
-            searchYoutube()
-        }
 
         adView.loadAd(
             AdRequest.Builder()
@@ -82,24 +81,25 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
                 channelModel: ChannelModel?,
                 channelsDialog: CartoonsDialog
             ) {
-                if (channelModel != null) {
+                if (channelModel != null && searchQuery != channelModel.name) {
                     searchQuery = channelModel.name
                     pageToken = null
                     adapterSearch.data.clear()
                     adapterSearch.notifyDataSetChanged()
                     searchYoutube()
-                } else {
-                    if (pageToken == null) {
-                        searchQuery = "كارتون للاطفال + برامج اطفال"
-                        adapterSearch.data.clear()
-                        adapterSearch.notifyDataSetChanged()
-                        searchYoutube()
-                    }
                 }
                 channelsDialog.dismiss()
             }
         })
 
+        cartoonsDialog.setOnDismissListener {
+            if (searchQuery == "" ){
+                searchQuery = "كارتون للاطفال + برامج اطفال"
+                adapterSearch.data.clear()
+                adapterSearch.notifyDataSetChanged()
+                searchYoutube()
+            }
+        }
         cartoonsDialog.show()
     }
 
@@ -188,11 +188,10 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
 
     private fun searchYoutube(loadMore: Boolean = false) {
 
-        refreshMessage.visibility = View.GONE
-        refresh.visibility = View.GONE
         if (!loadMore)
-            loading.visibility = View.VISIBLE
+            rootView.setVisible(CustomViews.LOADING)
 
+        Log.i("KidsApp",searchQuery)
         val call = MyApp.createApiService()
             .search(
                 key = resources.getString(R.string.key),
@@ -209,32 +208,33 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
                 call: Call<SearchResponse>,
                 response: Response<SearchResponse>
             ) {
-                loading.visibility = View.GONE
-                refresh.visibility = View.GONE
-                refreshMessage.visibility = View.GONE
+
                 if (response.isSuccessful && response.code() == 200) {
                     val videos = response.body()!!.items
                     pageToken = response.body()!!.nextPageToken
                     setVideos(videos)
+                    rootView.setVisible(CustomViews.LAYOUT)
                 } else {
-                    refresh.visibility = View.VISIBLE
-                    refreshMessage.visibility = View.VISIBLE
+                    rootView.setVisible(CustomViews.ERROR)
+                    rootView.setErrorText(R.string.error_message)
                     adapterSearch.loadMoreFail()
-                    toast(getString(R.string.error_message))
                 }
             }
 
             override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                loading.visibility = View.GONE
-                refresh.visibility = View.VISIBLE
-                refreshMessage.visibility = View.VISIBLE
-                toast(getString(R.string.error_message))
+
+                rootView.setVisible(CustomViews.INTERNET)
+                rootView.retry {
+                    rootView.setVisible(CustomViews.LAYOUT)
+                    searchYoutube()
+                }
             }
         })
     }
 
     private fun setVideos(videos: List<SearchItem>, loadMore: Boolean = false) {
         if (loadMore) {
+            videosRv.recycledViewPool.clear()
             adapterSearch.data.clear()
             adapterSearch.replaceData(addGoogleAdsType(videos))
         } else {

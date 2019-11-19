@@ -98,11 +98,6 @@ class CartoonsDialog(context: Context, private val iCartoonCallback: ICartoonCal
         close.setOnClickListener {
             this.dismiss()
         }
-
-        this.setOnDismissListener {
-            iCartoonCallback.selectedCartoon(null,this)
-        }
-
     }
 
     override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
