@@ -7,6 +7,7 @@
     <string name="interstitialAd" translatable="false">ca-app-pub-5669751081498672/4802194956</string>
     <string name="bannerAd" translatable="false">ca-app-pub-5669751081498672/5791294258</string>
     <string name="searchListBannerAd" translatable="false">ca-app-pub-5669751081498672/8034314217</string>
+    <string name="videoAd" translatable="false">ca-app-pub-3940256099942544/5224354917</string>
 
     <string name="app_name">Kids Tv</string>
     <string name="action_settings">Settings</string>

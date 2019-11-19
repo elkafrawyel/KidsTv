@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "221729343234",
+    "firebase_url": "https://kidstv-254519.firebaseio.com",
+    "project_id": "kidstv-254519",
+    "storage_bucket": "kidstv-254519.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:221729343234:android:2419171d11579a8c58241b",
+        "android_client_info": {
+          "package_name": "com.kids.funtv"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "221729343234-k6h3t6qirgjq4q4rusllg1786ea6221l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kids.funtv",
+            "certificate_hash": "2ce10d3d962e2359b0f8655b7fe2d5370c4b244c"
+          }
+        },
+        {
+          "client_id": "221729343234-s8senf7oljplinlbsguf6ugiihj1g51s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3-vGDKJ5IyxAf6jxiFTgCcruc77dvToA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "221729343234-s8senf7oljplinlbsguf6ugiihj1g51s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

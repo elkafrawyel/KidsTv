@@ -6,6 +6,8 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
+apply plugin: 'io.fabric'
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -13,8 +15,8 @@ android {
         applicationId "com.kids.funtv"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 3
-        versionName "0.3"
+        versionCode 5
+        versionName "0.5"
         testInstrumentationRunner "androidx.jumping_girl.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -50,7 +52,7 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    implementation "com.google.android.material:material:1.1.0-beta01"
+    implementation "com.google.android.material:material:1.2.0-alpha01"
 
     implementation "com.blankj:utilcode:1.23.5"
 
@@ -65,13 +67,21 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.8.0") {
         exclude group: "com.android.support"
     }
-    kapt "com.github.bumptech.glide:compiler:4.9.0"
+    kapt "com.github.bumptech.glide:compiler:4.10.0"
 
-    implementation 'com.google.android.gms:play-services-ads:18.2.0'
+    implementation 'com.google.android.gms:play-services-ads:18.3.0'
 
     // Youtube Player API
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.3'
 
     implementation "com.airbnb.android:lottie:3.0.0-beta1"
 
+
+
+    implementation 'com.google.firebase:firebase-messaging:20.0.1'
+    implementation 'com.google.firebase:firebase-crash:16.2.1'
+    implementation 'com.google.firebase:firebase-core:17.2.1'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+
 }
+apply plugin: 'com.google.gms.google-services'

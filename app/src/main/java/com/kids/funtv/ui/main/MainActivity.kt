@@ -1,6 +1,8 @@
 package com.kids.funtv.ui.main
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -17,6 +19,7 @@ import com.kids.funtv.MyApp
 import com.kids.funtv.R
 import com.kids.funtv.common.Constants
 import com.kids.funtv.common.CustomLoadMoreView
+import com.kids.funtv.common.RunAfterTime
 import com.kids.funtv.common.changeLanguage
 import com.kids.funtv.data.model.ChannelModel
 import com.kids.funtv.data.model.SearchItem
@@ -74,31 +77,46 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
         interstitialAd.adUnitId = getString(R.string.interstitialAd)
         interstitialAd.loadAd(AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build())
 
+
     }
 
+    override fun onResume() {
+        super.onResume()
+        RunAfterTime.after(
+            5000
+        ) {
+            if (interstitialAd.isLoaded)
+                interstitialAd.show()
+            else{
+                interstitialAd.loadAd(AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build())
+            }
+        }
+    }
     private fun openCartoonDialog() {
         val cartoonsDialog = CartoonsDialog(this, object : ICartoonCallback {
             override fun selectedCartoon(
                 channelModel: ChannelModel?,
                 channelsDialog: CartoonsDialog
             ) {
-                if (channelModel != null) {
+                if (channelModel != null && searchQuery != channelModel.name) {
                     searchQuery = channelModel.name
                     pageToken = null
                     adapterSearch.data.clear()
                     adapterSearch.notifyDataSetChanged()
                     searchYoutube()
-                } else {
-                    if (pageToken == null) {
-                        searchQuery = "كارتون للاطفال + برامج اطفال"
-                        adapterSearch.data.clear()
-                        adapterSearch.notifyDataSetChanged()
-                        searchYoutube()
-                    }
                 }
                 channelsDialog.dismiss()
             }
         })
+
+        cartoonsDialog.setOnDismissListener {
+            if (searchQuery == "" ){
+                searchQuery = "كارتون للاطفال + برامج اطفال"
+                adapterSearch.data.clear()
+                adapterSearch.notifyDataSetChanged()
+                searchYoutube()
+            }
+        }
 
         cartoonsDialog.show()
     }
@@ -110,6 +128,9 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
                 if (interstitialAd.isLoaded) {
                     interstitialAd.show()
                 } else {
+
+                    interstitialAd.loadAd(AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build())
+
                     PlayerActivity.start(
                         this@MainActivity,
                         (adapter?.data as List<VideoModel>)[position]
@@ -118,12 +139,14 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
 
                 interstitialAd.adListener = object : AdListener() {
                     override fun onAdClosed() {
+
+                        interstitialAd.loadAd(AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build())
+
                         PlayerActivity.start(
                             this@MainActivity,
                             (adapter?.data as List<VideoModel>)[position]
                         )
 
-                        interstitialAd.loadAd(AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build())
                     }
 
                     override fun onAdClicked() {
@@ -143,6 +166,7 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
 
             searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
                 override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+
                     return true
                 }
 

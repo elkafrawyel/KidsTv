@@ -99,9 +99,6 @@ class CartoonsDialog(context: Context, private val iCartoonCallback: ICartoonCal
             this.dismiss()
         }
 
-        this.setOnDismissListener {
-            iCartoonCallback.selectedCartoon(null,this)
-        }
 
     }
 

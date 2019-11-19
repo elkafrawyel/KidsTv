@@ -9,6 +9,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.reward.RewardItem
 import com.kids.funtv.MyApp
 import com.kids.funtv.R
 import com.kids.funtv.common.CustomLoadMoreView
@@ -28,6 +30,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.ArrayList
+import com.google.android.gms.ads.reward.RewardedVideoAd
+import com.google.android.gms.ads.reward.RewardedVideoAdListener
+
+
+
+
 
 class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListener {
 
@@ -36,6 +44,8 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
     var mYouTubePlayer: YouTubePlayer? = null
     var mYouTubePlayerTracker: YouTubePlayerTracker? = null
     var lastPlayedPosition: Float = 0F
+    var mRewardedVideoAd: RewardedVideoAd? = null
+
 
     private val part = "snippet"
     private var pageToken: String? = null
@@ -107,6 +117,58 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
                     .addTestDevice("410E806C439261CF851B922E62D371EB")
                     .build()
             )
+
+            mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this)
+            mRewardedVideoAd!!.loadAd(
+                getString(R.string.videoAd),
+                AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build()
+            )
+            mRewardedVideoAd!!.rewardedVideoAdListener = object : RewardedVideoAdListener {
+                override fun onRewardedVideoAdClosed() {
+                    playNextVideo()
+                    mRewardedVideoAd!!.loadAd(
+                        getString(R.string.videoAd),
+                        AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build()
+                    )
+                }
+
+                override fun onRewardedVideoAdLeftApplication() {
+                }
+
+                override fun onRewardedVideoAdLoaded() {
+                }
+
+                override fun onRewardedVideoAdOpened() {
+                }
+
+                override fun onRewardedVideoCompleted() {
+                }
+
+                override fun onRewarded(p0: RewardItem?) {
+                    mRewardedVideoAd!!.loadAd(
+                        getString(R.string.videoAd),
+                        AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build()
+                    )
+                }
+
+                override fun onRewardedVideoStarted() {
+                }
+
+                override fun onRewardedVideoAdFailedToLoad(p0: Int) {
+                }
+            }
+
+        }
+    }
+
+    private fun playNextVideo() {
+        if (adapterSearch.data.isNotEmpty()){
+            val video = adapterSearch.data[0]
+            videoId = video.searchItem!!.id.videoId
+            videoTitle = video.searchItem!!.snippet.title
+            adapterSearch.data.clear()
+            adapterSearch.notifyDataSetChanged()
+            playVideo()
         }
     }
 
@@ -156,13 +218,10 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
 
                         }
                         PlayerConstants.PlayerState.ENDED -> {
-                            if (adapterSearch.data.isNotEmpty()){
-                                val video = adapterSearch.data[0]
-                                videoId = video.searchItem!!.id.videoId
-                                videoTitle = video.searchItem!!.snippet.title
-                                adapterSearch.data.clear()
-                                adapterSearch.notifyDataSetChanged()
-                                playVideo()
+                            if (mRewardedVideoAd!!.isLoaded) {
+                                mRewardedVideoAd!!.show()
+                            }else{
+                                playNextVideo()
                             }
                         }
                         PlayerConstants.PlayerState.PLAYING -> {
@@ -272,4 +331,20 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
 
         return videosList
     }
+
+    override fun onResume() {
+        mRewardedVideoAd!!.resume(this)
+        super.onResume()
+    }
+
+    override fun onPause() {
+        mRewardedVideoAd!!.pause(this)
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        mRewardedVideoAd!!.destroy(this)
+        super.onDestroy()
+    }
+
 }

@@ -13,6 +13,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
+val CHANNEL_ID= "com.kids.funtv"
+
 class MyApp: Application() {
 
     override fun onCreate() {
