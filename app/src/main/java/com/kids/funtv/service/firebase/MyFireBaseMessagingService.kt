@@ -1,7 +1,12 @@
 package com.kids.funtv.service.firebase
 
+import android.app.Notification
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
 import androidx.core.app.NotificationManagerCompat
@@ -9,13 +14,15 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.kids.funtv.CHANNEL_ID
 import com.kids.funtv.R
-import com.kids.funtv.ui.splash.SplashActivity
+import com.kids.funtv.ui.main.MainActivity
 
-class MyFireBaseMessagingService: FirebaseMessagingService() {
 
+class MyFireBaseMessagingService : FirebaseMessagingService() {
+
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         // Create an explicit intent for an Activity in your app
-        val intent = Intent(this, SplashActivity::class.java).apply {
+        val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
@@ -25,12 +32,11 @@ class MyFireBaseMessagingService: FirebaseMessagingService() {
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(remoteMessage.notification!!.title)
             .setContentText(remoteMessage.notification!!.body)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setPriority(NotificationManager.IMPORTANCE_HIGH)
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)
             .setTicker(remoteMessage.notification!!.body)
             .setWhen(System.currentTimeMillis())
             .setVisibility(VISIBILITY_PUBLIC)
-            // Set the intent that will fire when the user taps the notification
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
         val notificationId = System.currentTimeMillis().toInt()
