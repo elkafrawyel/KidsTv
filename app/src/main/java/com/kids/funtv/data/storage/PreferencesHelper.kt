@@ -13,7 +13,7 @@ class PreferencesHelper(context: Context) {
 
     private val preference = PreferenceManager.getDefaultSharedPreferences(context)
 
-    var language = preference.getString(LANGUAGE, Constants.Language.ENGLISH.value)
+    var language = preference.getString(LANGUAGE, Constants.Language.ARABIC.value)
         set(value) = preference.edit().putString(LANGUAGE, value).apply()
 
     fun clear() {

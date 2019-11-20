@@ -37,21 +37,21 @@ class CartoonsDialog(context: Context, private val iCartoonCallback: ICartoonCal
         val cartoonList = ArrayList<ChannelModel>()
         cartoonList.add(
             ChannelModel(
-                "سبيستون",
+                "قناة سبيستون",
                 R.drawable.spacetoon_logo
             )
         )
 
         cartoonList.add(
             ChannelModel(
-                "كارتون نت وورك بالعربية",
+                "كارتون نت ورك بالعربية",
                 R.drawable.cartoon_network_logo
             )
         )
 
         cartoonList.add(
             ChannelModel(
-                "توم وجيري كامل اطفال",
+                "توم وجيري للاطفال",
                 R.drawable.tom_jerry_logo
             )
         )
@@ -86,7 +86,7 @@ class CartoonsDialog(context: Context, private val iCartoonCallback: ICartoonCal
 
         cartoonList.add(
             ChannelModel(
-                "قناة كراميش  للاطفال",
+                "قناة كراميش للاطفال",
                 R.drawable.caramish_logo
             )
         )

@@ -32,9 +32,7 @@ import retrofit2.Response
 import java.util.ArrayList
 import com.google.android.gms.ads.reward.RewardedVideoAd
 import com.google.android.gms.ads.reward.RewardedVideoAdListener
-
-
-
+import com.kids.funtv.common.RunAfterTime
 
 
 class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListener {
@@ -69,7 +67,7 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        changeLanguage()
+        changeLanguage()
         setContentView(R.layout.activity_player)
 
 
@@ -123,6 +121,19 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
                 getString(R.string.videoAd),
                 AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build()
             )
+
+
+            RunAfterTime.after(
+                5000
+            ) {
+                if(!mRewardedVideoAd!!.isLoaded){
+                    mRewardedVideoAd!!.loadAd(
+                        getString(R.string.videoAd),
+                        AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build()
+                    )
+                }
+            }
+
             mRewardedVideoAd!!.rewardedVideoAdListener = object : RewardedVideoAdListener {
                 override fun onRewardedVideoAdClosed() {
                     playNextVideo()
@@ -136,6 +147,7 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
                 }
 
                 override fun onRewardedVideoAdLoaded() {
+                    mRewardedVideoAd!!.show()
                 }
 
                 override fun onRewardedVideoAdOpened() {
@@ -221,6 +233,10 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
                             if (mRewardedVideoAd!!.isLoaded) {
                                 mRewardedVideoAd!!.show()
                             }else{
+                                mRewardedVideoAd!!.loadAd(
+                                    getString(R.string.videoAd),
+                                    AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build()
+                                )
                                 playNextVideo()
                             }
                         }
@@ -228,7 +244,14 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
 
                         }
                         PlayerConstants.PlayerState.PAUSED -> {
-
+                            if (mRewardedVideoAd!!.isLoaded) {
+                                mRewardedVideoAd!!.show()
+                            }else{
+                                mRewardedVideoAd!!.loadAd(
+                                    getString(R.string.videoAd),
+                                    AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build()
+                                )
+                            }
                         }
                         PlayerConstants.PlayerState.BUFFERING -> {
 

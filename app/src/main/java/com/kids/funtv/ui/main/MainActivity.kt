@@ -10,6 +10,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import com.blankj.utilcode.util.KeyboardUtils
@@ -22,6 +23,7 @@ import com.kids.funtv.MyApp
 import com.kids.funtv.R
 import com.kids.funtv.common.CustomLoadMoreView
 import com.kids.funtv.common.RunAfterTime
+import com.kids.funtv.common.changeLanguage
 import com.kids.funtv.data.model.ChannelModel
 import com.kids.funtv.data.model.SearchItem
 import com.kids.funtv.data.model.SearchResponse
@@ -48,7 +50,7 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        changeLanguage()
+        changeLanguage()
         setContentView(R.layout.activity_main)
 
         rootView.setLayout(videosRv)
@@ -76,21 +78,21 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
         interstitialAd.adUnitId = getString(R.string.interstitialAd)
         interstitialAd.loadAd(AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build())
 
-
     }
 
     override fun onResume() {
         super.onResume()
         RunAfterTime.after(
-            5000
+            10000
         ) {
             if (interstitialAd.isLoaded)
                 interstitialAd.show()
-            else{
+            else {
                 interstitialAd.loadAd(AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build())
             }
         }
     }
+
     private fun openCartoonDialog() {
         val cartoonsDialog = CartoonsDialog(this, object : ICartoonCallback {
             override fun selectedCartoon(
@@ -103,13 +105,15 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
                     adapterSearch.data.clear()
                     adapterSearch.notifyDataSetChanged()
                     searchYoutube()
+                    supportActionBar!!.title = searchQuery
+
                 }
                 channelsDialog.dismiss()
             }
         })
 
         cartoonsDialog.setOnDismissListener {
-            if (searchQuery == "" ){
+            if (searchQuery == "") {
                 searchQuery = "كارتون للاطفال + برامج اطفال"
                 adapterSearch.data.clear()
                 adapterSearch.notifyDataSetChanged()
@@ -161,6 +165,12 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
 
         if (searchItem != null) {
             val searchView = searchItem.actionView as SearchView
+            val searchSrcTextId = resources.getIdentifier("android:id/search_src_text", null, null)
+            val searchEditText = searchView.findViewById(searchSrcTextId) as EditText
+            searchEditText.hint = getString(R.string.search_hint)
+            searchEditText.setTextColor(Color.WHITE)
+            searchEditText.setHintTextColor(Color.WHITE)
+
 
             searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
                 override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
@@ -186,6 +196,12 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
                         adapterSearch.notifyDataSetChanged()
                         searchYoutube()
                         KeyboardUtils.hideSoftInput(this@MainActivity)
+
+                        searchView.clearFocus()
+                        searchView.setQuery("", false)
+                        searchView.isFocusable = false
+                        searchItem.collapseActionView()
+                        supportActionBar!!.title = searchQuery
                     }
                     return true
                 }
@@ -213,7 +229,7 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
         if (!loadMore)
             rootView.setVisible(CustomViews.LOADING)
 
-        Log.i("KidsApp",searchQuery)
+        Log.i("KidsApp", searchQuery)
         val call = MyApp.createApiService()
             .search(
                 key = resources.getString(R.string.key),
@@ -233,9 +249,13 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
 
                 if (response.isSuccessful && response.code() == 200) {
                     val videos = response.body()!!.items
-                    pageToken = response.body()!!.nextPageToken
-                    setVideos(videos)
-                    rootView.setVisible(CustomViews.LAYOUT)
+                    if (videos.isEmpty()){
+                     rootView.setVisible(CustomViews.EMPTY)
+                    }else {
+                        pageToken = response.body()!!.nextPageToken
+                        setVideos(videos)
+                        rootView.setVisible(CustomViews.LAYOUT)
+                    }
                 } else {
                     rootView.setVisible(CustomViews.ERROR)
                     rootView.setErrorText(R.string.error_message)
