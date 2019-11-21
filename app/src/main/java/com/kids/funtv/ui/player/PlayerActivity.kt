@@ -147,7 +147,7 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
                 }
 
                 override fun onRewardedVideoAdLoaded() {
-                    mRewardedVideoAd!!.show()
+//                    mRewardedVideoAd!!.show()
                 }
 
                 override fun onRewardedVideoAdOpened() {
@@ -244,14 +244,6 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
 
                         }
                         PlayerConstants.PlayerState.PAUSED -> {
-                            if (mRewardedVideoAd!!.isLoaded) {
-                                mRewardedVideoAd!!.show()
-                            }else{
-                                mRewardedVideoAd!!.loadAd(
-                                    getString(R.string.videoAd),
-                                    AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build()
-                                )
-                            }
                         }
                         PlayerConstants.PlayerState.BUFFERING -> {
 
