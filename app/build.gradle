@@ -15,8 +15,8 @@ android {
         applicationId "com.kids.funtv"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 8
-        versionName "0.8"
+        versionCode 12
+        versionName "0.12"
         testInstrumentationRunner "androidx.jumping_girl.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -53,13 +53,14 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    implementation "com.google.android.material:material:1.2.0-alpha01"
+    implementation "com.google.android.material:material:1.2.0-alpha02"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-rc02"
 
     implementation "com.blankj:utilcode:1.23.5"
 
     implementation "org.jetbrains.anko:anko-commons:0.10.0"
 
-    implementation "com.squareup.retrofit2:retrofit:2.6.1"
+    implementation "com.squareup.retrofit2:retrofit:2.6.2"
     implementation "com.squareup.retrofit2:converter-moshi:2.6.1"
     implementation "com.squareup.okhttp3:logging-interceptor:3.13.1"
 
@@ -77,13 +78,12 @@ dependencies {
 
     implementation "com.airbnb.android:lottie:3.0.0-beta1"
 
-
-
     implementation 'com.google.firebase:firebase-messaging:20.0.1'
     implementation 'com.google.firebase:firebase-crash:16.2.1'
     implementation 'com.google.firebase:firebase-core:17.2.1'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.github.elkafrawyel:FrameView-Android:0.0.7'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
 
 }
 apply plugin: 'com.google.gms.google-services'

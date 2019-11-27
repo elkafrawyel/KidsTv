@@ -1,13 +1,15 @@
 package com.kids.funtv.ui.main
 
 import android.view.View
-import com.bumptech.glide.Glide
+import android.widget.ImageView
+import androidx.cardview.widget.CardView
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.kids.funtv.R
+import com.kids.funtv.common.loadWithPlaceHolder
 import com.kids.funtv.data.model.VideoModel
 
 class AdapterSearch(data: MutableList<VideoModel>?) :
@@ -25,9 +27,9 @@ class AdapterSearch(data: MutableList<VideoModel>?) :
         when (helper.itemViewType) {
 
             0 -> {
-                Glide.with(mContext).load(item.searchItem!!.snippet.thumbnails.medium.url)
-                    .into(helper.getView(R.id.videoImage))
-                helper.setText(R.id.videoTitle,item.searchItem!!.snippet.title)
+                helper.getView<ImageView>(R.id.videoImage)
+                    .loadWithPlaceHolder(item.searchItem!!.snippet.thumbnails.medium.url)
+                helper.setText(R.id.videoTitle, item.searchItem!!.snippet.title)
             }
 
             1 -> {
@@ -65,4 +67,7 @@ class AdapterSearch(data: MutableList<VideoModel>?) :
         }
     }
 
+    fun getVideoImage(videoId: String): String {
+        return "https://img.youtube.com/vi/$videoId/maxresdefault.jpg"
+    }
 }

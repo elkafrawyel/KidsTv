@@ -9,12 +9,19 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionManager
 import com.blankj.utilcode.util.KeyboardUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.BaseQuickAdapter.SCALEIN
+import com.chad.library.adapter.base.BaseQuickAdapter.SLIDEIN_LEFT
 import com.elkafrawyel.CustomViews
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
@@ -23,6 +30,7 @@ import com.kids.funtv.MyApp
 import com.kids.funtv.R
 import com.kids.funtv.common.CustomLoadMoreView
 import com.kids.funtv.common.RunAfterTime
+import com.kids.funtv.common.SpacesItemDecoration
 import com.kids.funtv.common.changeLanguage
 import com.kids.funtv.data.model.ChannelModel
 import com.kids.funtv.data.model.SearchItem
@@ -43,17 +51,20 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
     private val AR = "العربية"
 
     lateinit var interstitialAd: InterstitialAd
+    private lateinit var viewModel: MainActivityViewModel
 
     private val adapterSearch: AdapterSearch = AdapterSearch(mutableListOf()).also {
         it.onItemChildClickListener = this
+        it.openLoadAnimation(SLIDEIN_LEFT)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         changeLanguage()
         setContentView(R.layout.activity_main)
+        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
 
-        rootView.setLayout(videosRv)
+        rootView.setLayout(homeLn)
         rootView.setVisible(CustomViews.LAYOUT)
 
 
@@ -78,19 +89,96 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
         interstitialAd.adUnitId = getString(R.string.interstitialAd)
         interstitialAd.loadAd(AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build())
 
+
+        //grid and list
+        val spacesItemDecoration = SpacesItemDecoration(8)
+
+        if (viewModel.isList) {
+            listImgv.setImageDrawable(getDrawable(R.drawable.list))
+            gridImgv.setImageDrawable(getDrawable(R.drawable.grid_not_selected))
+            videosRv.layoutManager = GridLayoutManager(
+                this,
+                1,
+                RecyclerView.VERTICAL,
+                false
+            )
+            changeGridItems(1)
+
+
+        } else {
+            listImgv.background = getDrawable(R.drawable.list_not_selected)
+            gridImgv.background = getDrawable(R.drawable.grid)
+
+            videosRv.layoutManager = GridLayoutManager(
+                this,
+                2,
+                RecyclerView.VERTICAL,
+                false
+            )
+            videosRv.addItemDecoration(spacesItemDecoration)
+            changeGridItems(2)
+        }
+
+        listImgv.setOnClickListener {
+            if (!viewModel.isList) {
+                listImgv.setImageDrawable(getDrawable(R.drawable.list))
+                gridImgv.setImageDrawable(getDrawable(R.drawable.grid_not_selected))
+                videosRv.post {
+                    TransitionManager.beginDelayedTransition(videosRv)
+                    (videosRv.layoutManager as GridLayoutManager).spanCount = 1
+                    videosRv.removeItemDecoration(spacesItemDecoration)
+                }
+
+                changeGridItems(1)
+
+                viewModel.isList = true
+            }
+        }
+
+        gridImgv.setOnClickListener {
+            if (viewModel.isList) {
+                listImgv.setImageDrawable(getDrawable(R.drawable.list_not_selected))
+                gridImgv.setImageDrawable(getDrawable(R.drawable.grid))
+                videosRv.post {
+                    TransitionManager.beginDelayedTransition(videosRv)
+                    (videosRv.layoutManager as GridLayoutManager).spanCount = 2
+                    videosRv.addItemDecoration(spacesItemDecoration)
+                }
+                viewModel.isList = false
+                changeGridItems(2)
+            }
+        }
+
+    }
+
+    private fun changeGridItems(spanCount: Int) {
+        (videosRv.layoutManager as GridLayoutManager).spanSizeLookup =
+            object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return if (adapterSearch.data.size - 1 > position) {
+                        if (adapterSearch.data[position].type == 1 && position != 0) {
+                            spanCount
+                        } else {
+                            1
+                        }
+                    } else {
+                        1
+                    }
+                }
+            }
     }
 
     override fun onResume() {
         super.onResume()
-        RunAfterTime.after(
-            10000
-        ) {
-            if (interstitialAd.isLoaded)
-                interstitialAd.show()
-            else {
-                interstitialAd.loadAd(AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build())
-            }
-        }
+//        RunAfterTime.after(
+//            10000
+//        ) {
+//            if (interstitialAd.isLoaded)
+//                interstitialAd.show()
+//            else {
+//                interstitialAd.loadAd(AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build())
+//            }
+//        }
     }
 
     private fun openCartoonDialog() {
@@ -171,7 +259,6 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
             searchEditText.setTextColor(Color.WHITE)
             searchEditText.setHintTextColor(Color.WHITE)
 
-
             searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
                 override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
 
@@ -249,9 +336,9 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
 
                 if (response.isSuccessful && response.code() == 200) {
                     val videos = response.body()!!.items
-                    if (videos.isEmpty()){
-                     rootView.setVisible(CustomViews.EMPTY)
-                    }else {
+                    if (videos.isEmpty()) {
+                        rootView.setVisible(CustomViews.EMPTY)
+                    } else {
                         pageToken = response.body()!!.nextPageToken
                         setVideos(videos)
                         rootView.setVisible(CustomViews.LAYOUT)
@@ -279,18 +366,20 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
             videosRv.recycledViewPool.clear()
             adapterSearch.data.clear()
             adapterSearch.replaceData(addGoogleAdsType(videos))
+            videosRv.scrollToPosition(0)
         } else {
             adapterSearch.addData(addGoogleAdsType(videos))
         }
         adapterSearch.loadMoreComplete()
 
         adapterSearch.notifyDataSetChanged()
+
     }
 
     private fun addGoogleAdsType(items: List<SearchItem>): ArrayList<VideoModel> {
         val videosList: ArrayList<VideoModel> = arrayListOf()
         items.forEachIndexed { index, searchItem ->
-            if ((index) % 5 == 0 && index != 0) {
+            if ((index) % 7 == 0 && index != 0) {
                 videosList.add(VideoModel(null, 1))
             } else {
                 videosList.add(VideoModel(searchItem, 0))

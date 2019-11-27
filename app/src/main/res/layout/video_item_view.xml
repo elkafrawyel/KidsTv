@@ -2,18 +2,18 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/videoItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="15dp"
-    android:id="@+id/videoItem"
+    android:layout_margin="4dp"
+    app:cardCornerRadius="10dp"
     app:cardElevation="@dimen/dp_4"
-    >
+    app:cardMaxElevation="@dimen/dp_4">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorSearchCard">
+        android:background="@color/colorBackground">
 
         <ImageView
             android:id="@+id/videoImage"
@@ -24,23 +24,33 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageView
+            android:id="@+id/youtubeImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_4"
+            android:scaleType="fitXY"
+            android:visibility="gone"
+            android:src="@drawable/play"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/videoTitle"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="12dp"
-            android:padding="8dp"
-            android:drawableStart="@drawable/play"
-            android:gravity="start"
-            android:drawablePadding="8dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="@dimen/dp_4"
             android:background="@android:color/transparent"
-            android:textAppearance="?attr/textAppearanceBody1"
+            android:padding="4dp"
+            android:textAppearance="?attr/textAppearanceBody2"
             app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/videoImage"
-            tools:text="Video Title"
-            android:layout_marginTop="4dp"/>
+            tools:text="Video Title" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

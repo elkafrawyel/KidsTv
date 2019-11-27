@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
@@ -48,8 +49,10 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
     private val part = "snippet"
     private var pageToken: String? = null
 
-    private val adapterSearch: AdapterSearch = AdapterSearch(mutableListOf()).also {
+    private val adapterSearch: AdapterSearch = AdapterSearch(mutableListOf()
+    ).also {
         it.onItemChildClickListener = this
+        it.openLoadAnimation(BaseQuickAdapter.SCALEIN)
     }
 
     companion object {
@@ -123,16 +126,16 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
             )
 
 
-            RunAfterTime.after(
-                5000
-            ) {
-                if(!mRewardedVideoAd!!.isLoaded){
-                    mRewardedVideoAd!!.loadAd(
-                        getString(R.string.videoAd),
-                        AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build()
-                    )
-                }
-            }
+//            RunAfterTime.after(
+//                5000
+//            ) {
+//                if(!mRewardedVideoAd!!.isLoaded){
+//                    mRewardedVideoAd!!.loadAd(
+//                        getString(R.string.videoAd),
+//                        AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build()
+//                    )
+//                }
+//            }
 
             mRewardedVideoAd!!.rewardedVideoAdListener = object : RewardedVideoAdListener {
                 override fun onRewardedVideoAdClosed() {
@@ -157,10 +160,10 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
                 }
 
                 override fun onRewarded(p0: RewardItem?) {
-                    mRewardedVideoAd!!.loadAd(
-                        getString(R.string.videoAd),
-                        AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build()
-                    )
+//                    mRewardedVideoAd!!.loadAd(
+//                        getString(R.string.videoAd),
+//                        AdRequest.Builder().addTestDevice("410E806C439261CF851B922E62D371EB").build()
+//                    )
                 }
 
                 override fun onRewardedVideoStarted() {
