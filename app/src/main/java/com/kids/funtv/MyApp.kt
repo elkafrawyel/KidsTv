@@ -63,7 +63,7 @@ class MyApp: Application() {
 
         private fun getOkHttpClient(): OkHttpClient {
             return OkHttpClient.Builder()
-                .cache(Cache(MyApp.instance.cacheDir, 15 * 1024 * 1024))
+                .cache(Cache(MyApp.instance.cacheDir, 60 * 60 * 24 * 28))
                 .addInterceptor(getLoggingInterceptor())
                 .readTimeout(60, TimeUnit.SECONDS)
                 .connectTimeout(60,TimeUnit.SECONDS)

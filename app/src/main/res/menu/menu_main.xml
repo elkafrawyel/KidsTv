@@ -12,7 +12,7 @@
 
     <item
         android:id="@+id/menu_dialog"
-        android:icon="@drawable/ic_filter_list_white_24dp"
+        android:icon="@drawable/jerry"
         android:title="@string/dialog_title"
         app:showAsAction="ifRoom" />
 </menu>

@@ -28,7 +28,7 @@
 
     <style name="splashStyle" parent="AppTheme">
         <item name="android:windowFullscreen">true</item>
-        <item name="android:windowBackground">@drawable/splash</item>
+        <item name="android:windowBackground">@drawable/splash_new</item>
     </style>
 
     <style name="CustomDialog" parent="android:Theme.Material.Dialog">

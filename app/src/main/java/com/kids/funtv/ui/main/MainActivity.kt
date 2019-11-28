@@ -313,8 +313,11 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
 
     private fun searchYoutube(loadMore: Boolean = false) {
 
-        if (!loadMore)
+        if (!loadMore) {
             rootView.setVisible(CustomViews.LOADING)
+            adapterSearch.data.clear()
+            adapterSearch.notifyDataSetChanged()
+        }
 
         Log.i("KidsApp", searchQuery)
         val call = MyApp.createApiService()
@@ -325,7 +328,6 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
                 type = "video",
                 pageToken = pageToken,
                 maxResult = 50
-//                regionCode = getString(R.string.regionCode)
             )
 
         call.enqueue(object : Callback<SearchResponse> {
@@ -361,15 +363,9 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
         })
     }
 
-    private fun setVideos(videos: List<SearchItem>, loadMore: Boolean = false) {
-        if (loadMore) {
-            videosRv.recycledViewPool.clear()
-            adapterSearch.data.clear()
-            adapterSearch.replaceData(addGoogleAdsType(videos))
-            videosRv.scrollToPosition(0)
-        } else {
-            adapterSearch.addData(addGoogleAdsType(videos))
-        }
+    private fun setVideos(videos: List<SearchItem>) {
+        adapterSearch.addData(addGoogleAdsType(videos))
+
         adapterSearch.loadMoreComplete()
 
         adapterSearch.notifyDataSetChanged()
