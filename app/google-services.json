@@ -1,42 +1,42 @@
 {
   "project_info": {
-    "project_number": "221729343234",
-    "firebase_url": "https://kidstv-254519.firebaseio.com",
-    "project_id": "kidstv-254519",
-    "storage_bucket": "kidstv-254519.appspot.com"
+    "project_number": "468606554186",
+    "firebase_url": "https://mykidsapp-a6c7d.firebaseio.com",
+    "project_id": "mykidsapp-a6c7d",
+    "storage_bucket": "mykidsapp-a6c7d.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:221729343234:android:2419171d11579a8c58241b",
+        "mobilesdk_app_id": "1:468606554186:android:6821f5f420bd6061cad6b3",
         "android_client_info": {
-          "package_name": "com.kids.funtv"
+          "package_name": "com.cartoons.kids"
         }
       },
       "oauth_client": [
         {
-          "client_id": "221729343234-k6h3t6qirgjq4q4rusllg1786ea6221l.apps.googleusercontent.com",
+          "client_id": "468606554186-covedrd7s6tg9ndqcv35k8jklt55kqar.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.kids.funtv",
+            "package_name": "com.cartoons.kids",
             "certificate_hash": "2ce10d3d962e2359b0f8655b7fe2d5370c4b244c"
           }
         },
         {
-          "client_id": "221729343234-s8senf7oljplinlbsguf6ugiihj1g51s.apps.googleusercontent.com",
+          "client_id": "468606554186-8ophe0b75uuc7cn08emf5h2ku4qd2441.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD3-vGDKJ5IyxAf6jxiFTgCcruc77dvToA"
+          "current_key": "AIzaSyA9XuOBaebclCVW8QOr8BpZ-b-L5pJLYDM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "221729343234-s8senf7oljplinlbsguf6ugiihj1g51s.apps.googleusercontent.com",
+              "client_id": "468606554186-8ophe0b75uuc7cn08emf5h2ku4qd2441.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

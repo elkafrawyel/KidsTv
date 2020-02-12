@@ -1,15 +1,16 @@
 <resources>
 <!--    My Key-->
-    <string name="key" translatable="false">AIzaSyCn4dNHKz14IFHkzyRD2MQvwCryRME5JgY</string>
+<!--    <string name="key" translatable="false">AIzaSyD0za6rHEdDJV_mHVWmUEEiehiR4kErAwg</string>-->
+    <string name="key" translatable="false">AIzaSyBh9fpCpXh9WeO9PHncA2yH74fTmFxIgFY</string>
 <!--    Test Key-->
 <!--    <string name="key" translatable="false">AIzaSyAyenwesv4XwxVReOsL6rUxsEiiGTw7vk4</string>-->
-    <string name="appId" translatable="false">ca-app-pub-5669751081498672~1629715633</string>
-    <string name="interstitialAd" translatable="false">ca-app-pub-5669751081498672/4802194956</string>
-    <string name="bannerAd" translatable="false">ca-app-pub-5669751081498672/5791294258</string>
-    <string name="searchListBannerAd" translatable="false">ca-app-pub-5669751081498672/8034314217</string>
-    <string name="videoAd" translatable="false">ca-app-pub-5669751081498672/8282355489</string>
+    <string name="appId" translatable="false">ca-app-pub-3014285664179930~3939307832</string>
+    <string name="bannerAd" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="interstitialAd" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="videosListBannerAd" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="videoAd" translatable="false">ca-app-pub-3940256099942544/5224354917</string>
 
-    <string name="app_name">KidsTV - كيدز تي في</string>
+    <string name="app_name">Slenee</string>
     <string name="action_settings">Settings</string>
     <string name="search_title">search</string>
     <string name="search">Type search words…</string>
@@ -23,5 +24,6 @@
     <string name="regionCode">US</string>
     <string name="dialog_title">Cartoon List</string>
     <string name="search_hint">Search for cartoons</string>
+    <string name="noPlaylists">There is no playists</string>
 
 </resources>

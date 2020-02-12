@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/dp_4"
     ads:adSize="MEDIUM_RECTANGLE"
-    ads:adUnitId="@string/searchListBannerAd"
+    ads:adUnitId="@string/videosListBannerAd"
     ads:layout_constraintBottom_toBottomOf="parent"
     ads:layout_constraintEnd_toEndOf="parent"
     ads:layout_constraintStart_toStartOf="parent" />

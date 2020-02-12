@@ -1,18 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.kids.funtv.ui.main.MainActivity">
-
-    <item
-        android:id="@+id/menu_search"
-        android:icon="@drawable/ic_search_white_24dp"
-        android:title="@string/search_title"
-        app:actionViewClass="android.widget.SearchView"
-        app:showAsAction="always|collapseActionView" />
-
+    tools:context="com.cartoons.kids.ui.main.MainActivity">
+    
     <item
         android:id="@+id/menu_dialog"
-        android:icon="@drawable/jerry"
+        android:icon="@drawable/ic_autorenew_white_24dp"
         android:title="@string/dialog_title"
         app:showAsAction="ifRoom" />
 </menu>

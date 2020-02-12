@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">KidsTV - كيدز تي في</string>
+    <string name="app_name">سليني</string>
     <string name="action_settings">الاعدادات</string>
     <string name="search_title">البحث</string>
     <string name="search">اكتب كلمات البحث…</string>
@@ -12,7 +12,8 @@
     <string name="refresh">اضغط هنا للنحديث</string>
     <string name="dialogTitle">اختر لتبدأ المشاهدة</string>
     <string name="regionCode">EG</string>
-    <string name="dialog_title">قائمة الكارتون</string>
+    <string name="dialog_title">قائمة المشاهدة</string>
     <string name="search_hint">ابحث عن برامجك المفضلة</string>
+    <string name="noPlaylists">لا توجد قوائم للمشاهدة</string>
 
 </resources>

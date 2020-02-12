@@ -6,7 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:fontFamily">@font/amiri_regular</item>
+        <item name="android:fontFamily">@font/font</item>
 
     </style>
 
@@ -28,7 +28,6 @@
 
     <style name="splashStyle" parent="AppTheme">
         <item name="android:windowFullscreen">true</item>
-        <item name="android:windowBackground">@drawable/splash_new</item>
     </style>
 
     <style name="CustomDialog" parent="android:Theme.Material.Dialog">
