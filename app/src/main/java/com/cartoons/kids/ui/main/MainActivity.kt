@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
@@ -19,7 +21,6 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.cartoons.kids.MyApp
 import com.cartoons.kids.R
-import com.cartoons.kids.common.RunAfterTime
 import com.cartoons.kids.common.SpacesItemDecoration
 import com.cartoons.kids.common.changeLanguage
 import com.cartoons.kids.data.model.ChannelModel
@@ -41,12 +42,7 @@ import kotlin.concurrent.timerTask
 
 class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListener {
 
-    companion object {
-        var defaultChannelId = ChannelsDataBase.getChannelsList()[0]
-    }
-
     private var timer: Timer? = null
-
     //show big ad when 3 times
     private var bigAdShowTime = 0
     lateinit var interstitialAd: InterstitialAd
@@ -55,15 +51,14 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
     private var playlistItems: ArrayList<VideoItem> = arrayListOf()
     private var currentChannelId: String? = null
     private var currentChannelIndex = 0
-    private var currentPlaylistIndex = 0
-    private var currentPlaylistId: String? = null
+    private var currentPlaylist: PlayListItem? = null
+
     private val playlistBannerAdapter =
         PlaylistBannerAdapter {
-            if (playlists.isNotEmpty() && playlists[it].id != currentPlaylistId) {
-                currentPlaylistId = playlists[it].id
-                channelTv.text = playlists[it].snippet.channelTitle
+            if (playlists.isNotEmpty() && playlists[it].id != currentPlaylist!!.id) {
+                currentPlaylist = playlists[it]
                 playlistTv.text = playlists[it].snippet.title
-                getPlayListItems(currentPlaylistId!!)
+                getPlayListItems(currentPlaylist!!.id)
             }
         }
 
@@ -81,7 +76,6 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
         rootView.setLayout(videosRv)
         rootView.setVisible(CustomViews.LAYOUT)
 
-        setSupportActionBar(toolbar)
         videosRv.setHasFixedSize(true)
         videosRv.adapter = adapterVideos
 
@@ -90,13 +84,6 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
 
         adapterVideos.data.clear()
         adapterVideos.notifyDataSetChanged()
-        if (NetworkUtils.isConnected()) {
-            getPlayLists(defaultChannelId)
-        } else {
-            rootView.setVisible(CustomViews.INTERNET)
-            bannerSliderVp.visibility = View.GONE
-        }
-
         adView.loadAd(
             AdRequest.Builder()
                 .tagForChildDirectedTreatment(true)
@@ -170,7 +157,41 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
                 changeGridItems(2)
             }
         }
+
+        addChannels()
     }
+
+    private fun addChannels() {
+        val adapterCategories = ArrayAdapter<ChannelModel>(
+            this,
+            R.layout.spinner_item_view,
+            ChannelsDataBase.getChannelsList()
+        )
+
+        adapterCategories.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        channelsSpinner.adapter = adapterCategories
+        channelsSpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    if (NetworkUtils.isConnected()) {
+                        getPlayLists(ChannelsDataBase.getChannelsList()[position].id)
+                    } else {
+                        rootView.setVisible(CustomViews.INTERNET)
+                        bannerSliderVp.visibility = View.GONE
+                    }
+                }
+            }
+    }
+
 
     private fun getPlayLists(channelId: String) {
         val call = MyApp.createApiService()
@@ -187,12 +208,28 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
             ) {
 
                 if (response.isSuccessful && response.body() != null && response.code() == 200) {
-                    playlists.clear()
-                    playlists.addAll(response.body()!!.playLists)
+                    if (response.body()!!.playLists.isNotEmpty()) {
+                        playlists.clear()
+                        playlists.addAll(response.body()!!.playLists)
 
-                    setUpPlaylistSlider()
+                        setUpPlaylistSlider()
+                    } else {
+                        Toast.makeText(
+                            this@MainActivity,
+                            getString(R.string.noPlaylists),
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
+                        bannerSliderVp.visibility = View.GONE
+
+                        //load other source
+                        getPlayListItems(ChannelsDataBase.getDefaultPlayList())
+                    }
                 } else {
-                    Toast.makeText(this@MainActivity, "There is no Playlists", Toast.LENGTH_LONG)
+                    Toast.makeText(
+                        this@MainActivity, getString(R.string.noPlaylists),
+                        Toast.LENGTH_LONG
+                    )
                         .show()
                     bannerSliderVp.visibility = View.GONE
 
@@ -271,7 +308,7 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
         bannerSliderVp.adapter = playlistBannerAdapter
 
         getPlayListItems(playlists[0].id)
-        channelTv.text = playlists[0].snippet.channelTitle
+//        channelTv.text = playlists[0].snippet.channelTitle
         playlistTv.text = playlists[0].snippet.title
 
         rootView.setVisible(CustomViews.LAYOUT)
@@ -310,34 +347,6 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
                 }
             }
         }, 5000, 10000)
-    }
-
-    private fun openCartoonDialog() {
-        val cartoonsDialog = CartoonsDialog(this, object : ICartoonCallback {
-            override fun selectedCartoon(
-                channelModel: ChannelModel?,
-                channelsDialog: CartoonsDialog
-            ) {
-                if (channelModel != null && currentChannelId != channelModel.id) {
-                    currentChannelId = channelModel.id
-                    adapterVideos.data.clear()
-                    adapterVideos.notifyDataSetChanged()
-//                    getPlayLists(currentChannelId!!)
-                    supportActionBar!!.title = channelModel.name
-                }
-                channelsDialog.dismiss()
-            }
-        })
-
-        cartoonsDialog.setOnDismissListener {
-            if (currentChannelId == null) {
-                currentChannelId = defaultChannelId
-                adapterVideos.data.clear()
-                adapterVideos.notifyDataSetChanged()
-//                getPlayLists(currentChannelId!!)
-            }
-        }
-        cartoonsDialog.show()
     }
 
     override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
@@ -396,21 +405,6 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_dialog -> {
-//                openCartoonDialog()
-                refreshHome()
-            }
-        }
-        return true
-    }
-
     private fun refreshHome() {
         if (NetworkUtils.isConnected()) {
             if (currentChannelIndex >= 0) {
@@ -418,7 +412,7 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
                     currentChannelIndex = -1
                 currentChannelIndex++
             }
-            currentChannelId = ChannelsDataBase.getChannelsList()[currentChannelIndex]
+            currentChannelId = ChannelsDataBase.getChannelsList()[currentChannelIndex].id
 
             getPlayLists(currentChannelId!!)
         } else {

@@ -60,13 +60,13 @@
         android:id="@+id/playlistTv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:ellipsize="marquee"
-        android:padding="8dp"
-        android:gravity="center"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="@dimen/dp_4"
+        android:ellipsize="marquee"
+        android:gravity="center"
         android:marqueeRepeatLimit="marquee_forever"
+        android:padding="8dp"
+        android:singleLine="true"
         android:textAppearance="?attr/textAppearanceBody1"
         android:textColor="@android:color/black"
         app:layout_constraintBottom_toBottomOf="@id/gridImgv"
@@ -114,13 +114,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/channelTv"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textAppearance="?attr/textAppearanceBody1"
-            android:textColor="@android:color/white" />
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/channelsSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_marginStart="18dp"
+                android:layout_marginEnd="18dp"
+                android:background="@drawable/spinner_bg"
+                android:gravity="center"
+                android:spinnerMode="dialog" />
+
+        </LinearLayout>
 
     </androidx.appcompat.widget.Toolbar>
 
