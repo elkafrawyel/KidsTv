@@ -8,6 +8,7 @@ import android.os.Build
 import com.blankj.utilcode.util.Utils
 import com.google.android.gms.ads.MobileAds
 import com.cartoons.kids.data.storage.PreferencesHelper
+import com.cartoons.kids.data.storage.database.SleneeDatabase
 import com.cartoons.kids.service.remote.YoutubeAPI
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -16,9 +17,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
-const val CHANNEL_ID= "com.kids.funtv"
+const val CHANNEL_ID = "com.cartoons.kids"
 
-class MyApp: Application() {
+class MyApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
@@ -26,7 +27,7 @@ class MyApp: Application() {
 //        changeLanguage()
         Utils.init(this)
 
-//        MobileAds.initialize(this,getString(R.string.appId))
+        MobileAds.initialize(this, getString(R.string.appId))
 
         createNotificationChannel()
 
@@ -62,10 +63,10 @@ class MyApp: Application() {
 
         private fun getOkHttpClient(): OkHttpClient {
             return OkHttpClient.Builder()
-                .cache(Cache(MyApp.instance.cacheDir, 60 * 60 * 24 * 28))
+                .cache(Cache(instance.cacheDir, 60 * 60 * 24 * 28))
                 .addInterceptor(getLoggingInterceptor())
                 .readTimeout(60, TimeUnit.SECONDS)
-                .connectTimeout(60,TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
                 .build()
         }
 
@@ -82,5 +83,8 @@ class MyApp: Application() {
 
 
         fun getPreferenceHelper() = PreferencesHelper(instance)
+
+        fun getAppDatabase() = SleneeDatabase.invoke(instance)
+
     }
 }

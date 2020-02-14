@@ -8,11 +8,11 @@ import androidx.cardview.widget.CardView
 import androidx.viewpager.widget.PagerAdapter
 import com.cartoons.kids.R
 import com.cartoons.kids.common.loadWithPlaceHolder
-import com.cartoons.kids.data.model.playlistModel.PlayListItem
+import com.cartoons.kids.data.model.PlayListDB
 
 class PlaylistBannerAdapter (private val clicked: (Int) -> Unit) : PagerAdapter() {
 
-    private val playLists = ArrayList<PlayListItem>()
+    private val playLists = ArrayList<PlayListDB>()
 
     override fun isViewFromObject(view: View, v: Any): Boolean {
         return view == v
@@ -30,7 +30,7 @@ class PlaylistBannerAdapter (private val clicked: (Int) -> Unit) : PagerAdapter(
 
         val imageView = cardView.findViewById<ImageView>(R.id.imageSlider)
 
-        imageView.loadWithPlaceHolder(playLists[position].snippet.thumbnails.medium.url)
+        imageView.loadWithPlaceHolder(playLists[position].image)
         imageView.setOnClickListener { clicked(position) }
         return cardView
     }
@@ -39,9 +39,9 @@ class PlaylistBannerAdapter (private val clicked: (Int) -> Unit) : PagerAdapter(
         container.removeView(`object` as View?)
     }
 
-    fun submitList(imagesList: List<PlayListItem>) {
-        playLists.clear()
-        playLists.addAll(imagesList)
+    fun submitList(playLists: List<PlayListDB>) {
+        this.playLists.clear()
+        this.playLists.addAll(playLists)
         notifyDataSetChanged()
     }
 

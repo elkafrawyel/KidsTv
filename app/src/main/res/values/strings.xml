@@ -4,11 +4,11 @@
     <string name="key" translatable="false">AIzaSyBh9fpCpXh9WeO9PHncA2yH74fTmFxIgFY</string>
 <!--    Test Key-->
 <!--    <string name="key" translatable="false">AIzaSyAyenwesv4XwxVReOsL6rUxsEiiGTw7vk4</string>-->
-    <string name="appId" translatable="false">ca-app-pub-3014285664179930~3939307832</string>
-    <string name="bannerAd" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="interstitialAd" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
-    <string name="videosListBannerAd" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="videoAd" translatable="false">ca-app-pub-3940256099942544/5224354917</string>
+    <string name="appId" translatable="false">ca-app-pub-9446744666336593~9491833057</string>
+    <string name="bannerAd" translatable="false">ca-app-pub-9446744666336593/5552588044</string>
+    <string name="videosListBannerAd" translatable="false">ca-app-pub-9446744666336593/9300261366</string>
+    <string name="interstitialAd" translatable="false">ca-app-pub-9446744666336593/4047934689</string>
+    <string name="videoAd" translatable="false">ca-app-pub-9446744666336593/9108689671</string>
 
     <string name="app_name">Slenee</string>
     <string name="action_settings">Settings</string>

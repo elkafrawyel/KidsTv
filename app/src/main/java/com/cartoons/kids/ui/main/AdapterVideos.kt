@@ -26,12 +26,10 @@ class AdapterVideos(data: MutableList<VideoModel>?) :
         when (helper.itemViewType) {
 
             0 -> {
-                if (item.searchItem!!.snippet!!.thumbnails == null)
-                    helper.getView<ImageView>(R.id.videoImage).loadWithPlaceHolder(R.drawable.icon)
-                else
-                    helper.getView<ImageView>(R.id.videoImage).loadWithPlaceHolder(item.searchItem!!.snippet!!.thumbnails!!.medium!!.url!!)
+                helper.getView<ImageView>(R.id.videoImage)
+                    .loadWithPlaceHolder(item.videoItem!!.image)
 
-                helper.setText(R.id.videoTitle, item.searchItem!!.snippet!!.title)
+                helper.setText(R.id.videoTitle, item.videoItem!!.name)
             }
 
             1 -> {
@@ -40,7 +38,6 @@ class AdapterVideos(data: MutableList<VideoModel>?) :
                 adView.loadAd(
                     AdRequest.Builder()
                         .tagForChildDirectedTreatment(true)
-
                         .addTestDevice("410E806C439261CF851B922E62D371EB")
                         .build()
                 )

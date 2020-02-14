@@ -10,7 +10,6 @@ class ChannelsDataBase {
         fun getChannelsList(): ArrayList<ChannelModel> {
             val channelsList = ArrayList<ChannelModel>()
 
-
             channelsList.add(ChannelModel("UCGAWwx_VrdiBawxxaQMBPug", "اناشيد الروضة")) //اناشيد الروضة
             channelsList.add(ChannelModel("UCsciiPEQCUN-uos-crZAsPg", "المصحف المعلم للأطفال"))
             channelsList.add(ChannelModel("UCFBZOFHWS6KzfUhPAEy1gAQ", "تعلم الرسم و التلوين"))

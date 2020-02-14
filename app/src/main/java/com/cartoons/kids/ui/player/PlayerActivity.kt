@@ -14,6 +14,7 @@ import com.google.android.gms.ads.reward.RewardItem
 import com.cartoons.kids.R
 import com.cartoons.kids.common.RunAfterTime
 import com.cartoons.kids.common.changeLanguage
+import com.cartoons.kids.data.model.VideoDB
 import com.cartoons.kids.data.model.VideoModel
 import com.cartoons.kids.ui.main.AdapterVideos
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
@@ -32,7 +33,7 @@ import kotlinx.android.synthetic.main.activity_player.videosRv
 
 class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListener {
 
-    private var videos: ArrayList<VideoItem> = arrayListOf()
+    private var videos: ArrayList<VideoDB> = arrayListOf()
     private var videoPosition = 0
 
     var mYouTubePlayer: YouTubePlayer? = null
@@ -52,7 +53,7 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
         const val VIDEOS = "videos"
         const val POSITION = "videoPosition"
 
-        fun start(context: Context, videos: ArrayList<VideoItem>, position: Int) {
+        fun start(context: Context, videos: ArrayList<VideoDB>, position: Int) {
             val intent = Intent(context, PlayerActivity::class.java)
             intent.putExtra(VIDEOS, videos)
             intent.putExtra(POSITION, position)
@@ -62,7 +63,7 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        changeLanguage()
+//        changeLanguage()
         setContentView(R.layout.activity_player)
 
 
@@ -191,10 +192,10 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
     }
 
     private fun playVideo() {
-        videoTitleEt.text = videos[videoPosition].snippet!!.title
+        videoTitleEt.text = videos[videoPosition].name!!
 
         if (mYouTubePlayer != null) {
-            mYouTubePlayer!!.loadVideo(videos[videoPosition].snippet!!.resourceId!!.videoId!!, 0f)
+            mYouTubePlayer!!.loadVideo(videos[videoPosition].id!!, 0f)
             mYouTubePlayerTracker = YouTubePlayerTracker()
             mYouTubePlayer!!.addListener(mYouTubePlayerTracker!!)
         } else {
@@ -204,7 +205,7 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
                 override fun onReady(youTubePlayer: YouTubePlayer) {
                     mYouTubePlayer = youTubePlayer
                     youTubePlayer.loadVideo(
-                        videos[videoPosition].snippet!!.resourceId!!.videoId!!,
+                        videos[videoPosition].id!!,
                         lastPlayedPosition
                     )
                     mYouTubePlayerTracker = YouTubePlayerTracker()
@@ -278,20 +279,20 @@ class PlayerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickLis
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
     }
 
-    private fun setVideos(videos: List<VideoItem>) {
+    private fun setVideos(videos: List<VideoDB>) {
         adapterVideos.replaceData(addGoogleAdsType(videos))
         adapterVideos.notifyDataSetChanged()
         loading.visibility = View.GONE
     }
 
-    private fun addGoogleAdsType(items: List<VideoItem>): ArrayList<VideoModel> {
+    private fun addGoogleAdsType(items: List<VideoDB>): ArrayList<VideoModel> {
         val videosList: ArrayList<VideoModel> = arrayListOf()
         items.forEachIndexed { index, videoItem ->
-            if ((index) % 5 == 0 && index != 0) {
-                videosList.add(VideoModel(null, 1))
-            } else {
-                videosList.add(VideoModel(videoItem, 0))
-            }
+            //            if ((index) % 5 == 0 && index != 0) {
+//                videosList.add(VideoModel(null, 1))
+//            } else {
+            videosList.add(VideoModel(videoItem, 0))
+//            }
         }
 
         return videosList

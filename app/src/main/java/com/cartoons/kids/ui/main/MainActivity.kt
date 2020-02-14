@@ -1,8 +1,6 @@
 package com.cartoons.kids.ui.main
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -22,19 +20,19 @@ import com.google.android.gms.ads.InterstitialAd
 import com.cartoons.kids.MyApp
 import com.cartoons.kids.R
 import com.cartoons.kids.common.SpacesItemDecoration
-import com.cartoons.kids.common.changeLanguage
 import com.cartoons.kids.data.model.ChannelModel
+import com.cartoons.kids.data.model.PlayListDB
+import com.cartoons.kids.data.model.VideoDB
 import com.cartoons.kids.data.storage.ChannelsDataBase
 import com.cartoons.kids.data.model.VideoModel
-import com.cartoons.kids.data.model.playlistModel.PlayListItem
 import com.cartoons.kids.data.model.playlistModel.PlayListResponse
-import com.cartoons.kids.data.model.videoModel.VideoItem
 import com.cartoons.kids.data.model.videoModel.VideoResponse
 import com.cartoons.kids.ui.player.PlayerActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.timerTask
@@ -47,17 +45,18 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
     private var bigAdShowTime = 0
     lateinit var interstitialAd: InterstitialAd
     private lateinit var viewModel: MainActivityViewModel
-    private var playlists: ArrayList<PlayListItem> = arrayListOf()
-    private var playlistItems: ArrayList<VideoItem> = arrayListOf()
+    private var playlists: ArrayList<PlayListDB> = arrayListOf()
+    private var playlistItems: ArrayList<VideoDB> = arrayListOf()
     private var currentChannelId: String? = null
     private var currentChannelIndex = 0
-    private var currentPlaylist: PlayListItem? = null
+    private var currentPlaylist: PlayListDB? = null
+    private var blockRequest = false
 
     private val playlistBannerAdapter =
         PlaylistBannerAdapter {
             if (playlists.isNotEmpty() && playlists[it].id != currentPlaylist!!.id) {
                 currentPlaylist = playlists[it]
-                playlistTv.text = playlists[it].snippet.title
+                playlistTv.text = playlists[it].name
                 getPlayListItems(currentPlaylist!!.id)
             }
         }
@@ -69,7 +68,7 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        changeLanguage()
+//        changeLanguage()
         setContentView(R.layout.activity_main)
         viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
 
@@ -183,116 +182,171 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
                     id: Long
                 ) {
                     if (NetworkUtils.isConnected()) {
-                        getPlayLists(ChannelsDataBase.getChannelsList()[position].id)
+                        if (!blockRequest)
+                            getPlayLists(ChannelsDataBase.getChannelsList()[position].id)
                     } else {
                         rootView.setVisible(CustomViews.INTERNET)
                         bannerSliderVp.visibility = View.GONE
+                        rootView.retry {
+                            if (!blockRequest)
+                                getPlayLists(ChannelsDataBase.getChannelsList()[position].id)
+                        }
                     }
                 }
             }
     }
 
-
     private fun getPlayLists(channelId: String) {
-        val call = MyApp.createApiService()
-            .getPlayLists(
-                key = resources.getString(R.string.key),
-                part = "snippet",
-                channelId = channelId
-            )
+        val storedPlayLists = MyApp.getAppDatabase().dao().getPlaylistsByChannelId(channelId)
 
-        call.enqueue(object : Callback<PlayListResponse> {
-            override fun onResponse(
-                call: Call<PlayListResponse>,
-                response: Response<PlayListResponse>
-            ) {
+        if (storedPlayLists == null || storedPlayLists.isEmpty()) {
+            val call = MyApp.createApiService()
+                .getPlayLists(
+                    key = resources.getString(R.string.key),
+                    part = "snippet",
+                    channelId = channelId
+                )
 
-                if (response.isSuccessful && response.body() != null && response.code() == 200) {
-                    if (response.body()!!.playLists.isNotEmpty()) {
-                        playlists.clear()
-                        playlists.addAll(response.body()!!.playLists)
+            call.enqueue(object : Callback<PlayListResponse> {
+                override fun onResponse(
+                    call: Call<PlayListResponse>,
+                    response: Response<PlayListResponse>
+                ) {
+                    if (response.isSuccessful && response.body() != null && response.code() == 200) {
+                        if (response.body()!!.playLists.isNotEmpty()) {
+                            val databasePlaylists = response.body()!!.playLists.map {
+                                try {
+                                    PlayListDB(
+                                        id = it.id,
+                                        name = it.snippet.title,
+                                        image = it.snippet.thumbnails.medium.url,
+                                        channelId = it.snippet.channelId
+                                    )
+                                } catch (ex: Exception) {
+                                    null
+                                }
+                            }
+                            MyApp.getAppDatabase().dao()
+                                .insertPlaylist(databasePlaylists.filterNotNull())
+                            playlists.clear()
+                            playlists.addAll(databasePlaylists.filterNotNull())
 
-                        setUpPlaylistSlider()
+                            setUpPlaylistSlider()
+                        } else {
+                            bannerSliderVp.visibility = View.GONE
+                            //load other source
+                            getPlayListItems(ChannelsDataBase.getDefaultPlayList())
+                        }
+                    } else if (response.code() == 403) {
+                        bannerSliderVp.visibility = View.GONE
+                        rootView.setVisible(CustomViews.EMPTY)
+                        rootView.setEmptyText("انتهت المدة المسموحة للمشاهدة حاول لاحقاا في الغد.")
+                        blockRequest = true
                     } else {
                         Toast.makeText(
-                            this@MainActivity,
-                            getString(R.string.noPlaylists),
+                            this@MainActivity, getString(R.string.noPlaylists),
                             Toast.LENGTH_LONG
-                        )
-                            .show()
+                        ).show()
                         bannerSliderVp.visibility = View.GONE
 
                         //load other source
                         getPlayListItems(ChannelsDataBase.getDefaultPlayList())
                     }
-                } else {
-                    Toast.makeText(
-                        this@MainActivity, getString(R.string.noPlaylists),
-                        Toast.LENGTH_LONG
-                    )
-                        .show()
-                    bannerSliderVp.visibility = View.GONE
-
-                    //load other source
-                    getPlayListItems(ChannelsDataBase.getDefaultPlayList())
                 }
+
+                override fun onFailure(call: Call<PlayListResponse>, t: Throwable) {
+                    Toast.makeText(this@MainActivity, t.message, Toast.LENGTH_LONG).show()
+                }
+            })
+        } else {
+            //load from db
+            if (storedPlayLists.isNotEmpty()) {
+                playlists.clear()
+                playlists.addAll(storedPlayLists)
+
+                setUpPlaylistSlider()
+            } else {
+                bannerSliderVp.visibility = View.GONE
+                //load other source
+                getPlayListItems(ChannelsDataBase.getDefaultPlayList())
             }
 
-            override fun onFailure(call: Call<PlayListResponse>, t: Throwable) {
-                Toast.makeText(this@MainActivity, t.message, Toast.LENGTH_LONG).show()
-            }
-        })
+        }
     }
 
     private fun getPlayListItems(playlistId: String) {
-        rootView.setVisible(CustomViews.LOADING)
+        val storedVideos = MyApp.getAppDatabase().dao().getVideosByPlaylist(playlistId)
 
-        val call = MyApp.createApiService()
-            .getPlayListItems(
-                key = resources.getString(R.string.key),
-                part = "snippet",
-                playlistId = playlistId,
-                maxResult = 50
-            )
+        if (storedVideos == null || storedVideos.isEmpty()) {
+            rootView.setVisible(CustomViews.LOADING)
 
-        call.enqueue(object : Callback<VideoResponse> {
-            override fun onResponse(
-                call: Call<VideoResponse>,
-                response: Response<VideoResponse>
-            ) {
+            val call = MyApp.createApiService()
+                .getPlayListItems(
+                    key = resources.getString(R.string.key),
+                    part = "snippet",
+                    playlistId = playlistId,
+                    maxResult = 50
+                )
 
-                if (response.isSuccessful && response.body() != null && response.code() == 200) {
-                    adapterVideos.data.clear()
-                    adapterVideos.notifyDataSetChanged()
-                    adapterVideos.notifyDataSetChanged()
+            call.enqueue(object : Callback<VideoResponse> {
+                override fun onResponse(
+                    call: Call<VideoResponse>,
+                    response: Response<VideoResponse>
+                ) {
+                    if (response.isSuccessful && response.body() != null && response.code() == 200) {
+                        adapterVideos.data.clear()
+                        adapterVideos.notifyDataSetChanged()
+                        adapterVideos.notifyDataSetChanged()
 
-                    playlistItems.clear()
-                    playlistItems.addAll(response.body()!!.videoItems)
-                    videosRv.recycledViewPool.clear()
-                    setUpPlaylistVideos()
-                    rootView.setVisible(CustomViews.LAYOUT)
-                } else {
-                    Toast.makeText(
-                        this@MainActivity,
-                        getString(R.string.noPlaylists),
-                        Toast.LENGTH_LONG
-                    ).show()
-                    bannerSliderVp.visibility = View.GONE
-                    rootView.setVisible(CustomViews.ERROR)
+                        val databaseVideos = response.body()!!.videoItems.map {
 
+                            try {
+                                VideoDB(
+                                    id = it.snippet!!.resourceId!!.videoId!!,
+                                    name = it.snippet.title!!,
+                                    image = it.snippet.thumbnails!!.medium!!.url!!,
+                                    playlistId = it.snippet.playlistId!!
+                                )
+                            } catch (ex: Exception) {
+                                null
+                            }
+                        }
+                        MyApp.getAppDatabase().dao().insertVideo(databaseVideos.filterNotNull())
+
+                        playlistItems.clear()
+                        playlistItems.addAll(databaseVideos.filterNotNull())
+                        videosRv.recycledViewPool.clear()
+                        setUpPlaylistVideos()
+                    } else {
+                        Toast.makeText(
+                            this@MainActivity,
+                            getString(R.string.noPlaylists),
+                            Toast.LENGTH_LONG
+                        ).show()
+                        bannerSliderVp.visibility = View.GONE
+                        rootView.setVisible(CustomViews.ERROR)
+                    }
                 }
-            }
 
-            override fun onFailure(call: Call<VideoResponse>, t: Throwable) {
-                Toast.makeText(
-                    this@MainActivity,
-                    getString(R.string.error_message),
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        })
+                override fun onFailure(call: Call<VideoResponse>, t: Throwable) {
+                    rootView.setVisible(CustomViews.ERROR)
+                    rootView.setEmptyText(getString(R.string.error_message))
+                }
+            })
+        } else {
+            //load from db
+            adapterVideos.data.clear()
+            adapterVideos.notifyDataSetChanged()
+            adapterVideos.notifyDataSetChanged()
+
+            playlistItems.clear()
+            playlistItems.addAll(storedVideos)
+            videosRv.recycledViewPool.clear()
+            setUpPlaylistVideos()
+        }
+
+
     }
-
 
     private fun setUpPlaylistVideos() {
         if (playlistItems.isEmpty()) {
@@ -306,10 +360,9 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
     private fun setUpPlaylistSlider() {
         playlistBannerAdapter.submitList(playlists)
         bannerSliderVp.adapter = playlistBannerAdapter
-
+        currentPlaylist = playlists[0]
         getPlayListItems(playlists[0].id)
-//        channelTv.text = playlists[0].snippet.channelTitle
-        playlistTv.text = playlists[0].snippet.title
+        playlistTv.text = playlists[0].name
 
         rootView.setVisible(CustomViews.LAYOUT)
         bannerSliderVp.visibility = View.VISIBLE
@@ -417,36 +470,32 @@ class MainActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickListe
             getPlayLists(currentChannelId!!)
         } else {
             rootView.setVisible(CustomViews.INTERNET)
+            rootView.retry {
+
+            }
             bannerSliderVp.visibility = View.GONE
         }
 
 
     }
 
-    private fun setVideosList(videos: List<VideoItem>) {
-
-        val videosList = ArrayList<VideoItem>()
-        videos.forEach {
-            if (it.snippet!!.thumbnails != null) {
-                videosList.add(it)
-            }
-        }
+    private fun setVideosList(videos: List<VideoDB>) {
 
         videosRv.recycledViewPool.clear()
-        adapterVideos.replaceData(addGoogleAdsType(videosList))
+        adapterVideos.replaceData(addGoogleAdsType(videos))
         adapterVideos.notifyDataSetChanged()
         videosRv.layoutManager!!.scrollToPosition(0)
 
     }
 
-    private fun addGoogleAdsType(items: List<VideoItem>): ArrayList<VideoModel> {
+    private fun addGoogleAdsType(items: List<VideoDB>): ArrayList<VideoModel> {
         val videosList: ArrayList<VideoModel> = arrayListOf()
-        items.forEachIndexed { index, searchItem ->
-            if ((index) % 7 == 0 && index != 0) {
-                videosList.add(VideoModel(null, 1))
-            } else {
-                videosList.add(VideoModel(searchItem, 0))
-            }
+        items.forEachIndexed { index, videoDB ->
+            //            if ((index) % 7 == 0 && index != 0) {
+//                videosList.add(VideoModel(null, 1))
+//            } else {
+            videosList.add(VideoModel(videoDB, 0))
+//            }
         }
 
         return videosList
