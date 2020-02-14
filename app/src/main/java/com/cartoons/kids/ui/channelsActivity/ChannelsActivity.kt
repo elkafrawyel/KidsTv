@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
@@ -19,7 +20,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.cartoons.kids.MyApp
 import com.cartoons.kids.R
-import com.cartoons.kids.common.SpacesItemDecoration
+import com.cartoons.kids.common.*
 import com.cartoons.kids.data.model.ChannelModel
 import com.cartoons.kids.data.model.PlayListDB
 import com.cartoons.kids.data.model.VideoDB
@@ -99,6 +100,10 @@ class ChannelsActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickL
                 .addTestDevice("410E806C439261CF851B922E62D371EB").build()
         )
 
+        options.setOnClickListener {
+            openOptionMenu()
+        }
+
 
         //grid and list
         val spacesItemDecoration = SpacesItemDecoration(8)
@@ -163,6 +168,28 @@ class ChannelsActivity : AppCompatActivity(), BaseQuickAdapter.OnItemChildClickL
         }
 
         addChannels()
+    }
+
+    private fun openOptionMenu() {
+        val popup = PopupMenu(this, options)
+        popup.inflate(R.menu.option_menu)
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.appPage -> {
+                    openAppOnStore()
+                }
+
+                R.id.share -> {
+                    shareApp()
+                }
+
+                R.id.faceBook -> {
+                    showMessageInDialog(getString(R.string.facebookMessage), { openFaceBookPage() }, {})
+                }
+            }
+            false
+        }
+        popup.show()
     }
 
     private fun addChannels() {

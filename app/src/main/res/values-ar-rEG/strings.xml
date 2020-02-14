@@ -16,4 +16,12 @@
     <string name="search_hint">ابحث عن برامجك المفضلة</string>
     <string name="noPlaylists">لا توجد قوائم للمشاهدة</string>
 
+    <string name="faceBookPage">للمشاكل والاقتراحات</string>
+    <string name="share">مشاركة التطبيق</string>
+    <string name="appPage">تقييم التطبيق</string>
+
+    <string name="Ok">حسنا</string>
+    <string name="cancel">الفاء</string>
+    <string name="facebookMessage">صفحة التطبيق علي الفيس بوك للمشاكل والمقتراحات</string>
+
 </resources>

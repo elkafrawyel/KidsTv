@@ -1,7 +1,7 @@
 <resources>
     <!--    My Key-->
-<!--        <string name="key" translatable="false">AIzaSyD0za6rHEdDJV_mHVWmUEEiehiR4kErAwg</string>-->
-    <string name="key" translatable="false">AIzaSyBh9fpCpXh9WeO9PHncA2yH74fTmFxIgFY</string>
+        <string name="key" translatable="false">AIzaSyD0za6rHEdDJV_mHVWmUEEiehiR4kErAwg</string>
+<!--    <string name="key" translatable="false">AIzaSyBh9fpCpXh9WeO9PHncA2yH74fTmFxIgFY</string>-->
     <!--    Test Key-->
     <!--    <string name="key" translatable="false">AIzaSyAyenwesv4XwxVReOsL6rUxsEiiGTw7vk4</string>-->
     <string name="appId" translatable="false">ca-app-pub-9446744666336593~9491833057</string>
@@ -25,5 +25,11 @@
     <string name="dialog_title">Cartoon List</string>
     <string name="search_hint">Search for cartoons</string>
     <string name="noPlaylists">There is no playists</string>
+    <string name="faceBookPage">Facebook Page</string>
+    <string name="share">Share</string>
+    <string name="appPage">App Page</string>
+    <string name="Ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="facebookMessage">Facebook Page for any question.</string>
 
 </resources>
