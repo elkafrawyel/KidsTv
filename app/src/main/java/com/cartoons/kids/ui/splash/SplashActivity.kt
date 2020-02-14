@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.cartoons.kids.R
-import com.cartoons.kids.ui.main.MainActivity
+import com.cartoons.kids.ui.channelsActivity.ChannelsActivity
 import kotlinx.android.synthetic.main.activity_splash.*
 
 class SplashActivity : AppCompatActivity() {
@@ -24,7 +24,7 @@ class SplashActivity : AppCompatActivity() {
             }
 
             override fun onAnimationEnd(animation: Animation?) {
-                startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                startActivity(Intent(this@SplashActivity, ChannelsActivity::class.java))
                 finish()
             }
 

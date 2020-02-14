@@ -13,10 +13,9 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.reward.RewardItem
 import com.cartoons.kids.R
 import com.cartoons.kids.common.RunAfterTime
-import com.cartoons.kids.common.changeLanguage
 import com.cartoons.kids.data.model.VideoDB
 import com.cartoons.kids.data.model.VideoModel
-import com.cartoons.kids.ui.main.AdapterVideos
+import com.cartoons.kids.ui.channelsActivity.AdapterVideos
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
@@ -26,7 +25,6 @@ import kotlinx.android.synthetic.main.activity_player.*
 import java.util.ArrayList
 import com.google.android.gms.ads.reward.RewardedVideoAd
 import com.google.android.gms.ads.reward.RewardedVideoAdListener
-import com.cartoons.kids.data.model.videoModel.VideoItem
 import kotlinx.android.synthetic.main.activity_player.adView
 import kotlinx.android.synthetic.main.activity_player.videosRv
 

@@ -12,7 +12,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.cartoons.kids.CHANNEL_ID
 import com.cartoons.kids.R
-import com.cartoons.kids.ui.main.MainActivity
+import com.cartoons.kids.ui.channelsActivity.ChannelsActivity
 
 
 class MyFireBaseMessagingService : FirebaseMessagingService() {
@@ -20,7 +20,7 @@ class MyFireBaseMessagingService : FirebaseMessagingService() {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         // Create an explicit intent for an Activity in your app
-        val intent = Intent(this, MainActivity::class.java).apply {
+        val intent = Intent(this, ChannelsActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
